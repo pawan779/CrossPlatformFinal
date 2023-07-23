@@ -6,11 +6,12 @@ import {
   useWindowDimensions,
   StyleProp,
   ViewStyle,
+  TextStyle,
 } from "react-native";
 
 interface TypographyProps {
   variant?: "heading" | "subheading" | "body" | "button";
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<TextStyle>;
   children: React.ReactNode;
 }
 

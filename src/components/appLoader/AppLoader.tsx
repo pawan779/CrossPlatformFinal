@@ -29,19 +29,6 @@ const AppLoader: React.FC = () => {
   if (!fontsLoaded) {
     return null;
   }
-
-  return (
-    <View style={styles.container} onLayout={onLayoutRootView}>
-      <Text style={{ fontSize: 30, fontFamily: "Inter-Bold" }}>
-        Inter Black
-      </Text>
-      <Text style={{ fontSize: 30 }}>Platform Default</Text>
-
-      <Button label="Button" size="large" />
-
-      <Typography variant="heading">Heading</Typography>
-    </View>
-  );
 };
 
 const styles = StyleSheet.create({

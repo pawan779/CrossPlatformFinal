@@ -9,6 +9,7 @@ import styles from "./styles";
 import { Common } from "../common";
 import { View } from "react-native";
 import ProfileScreen from "../../screens/Profile";
+import AddPost from "../../screens/Post";
 
 type RoutesParamList = {
   Home: undefined;
@@ -65,7 +66,7 @@ const ButtonTab: React.FC = () => {
       })}
     >
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Post" component={Home} />
+      <Tab.Screen name="Post" component={AddPost} />
       <Tab.Screen name="Notification" component={Home} />
       <Tab.Screen name="More" component={ProfileScreen} />
       {/* Add other screens as needed */}

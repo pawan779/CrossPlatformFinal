@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import Header from "../../components/common/Header";
 import ImageSlider from "./components/ImageSlider";
+import CustomTabNavigation from "./components/TabBar";
 
 const Home: React.FC = () => {
   return (

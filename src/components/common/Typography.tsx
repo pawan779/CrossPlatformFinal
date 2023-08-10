@@ -15,23 +15,6 @@ interface TypographyProps {
   children: React.ReactNode;
 }
 
-export const getFontFamily = (
-  variant?: "heading" | "subheading" | "body" | "button"
-) => {
-  switch (variant) {
-    case "heading":
-      return "Inter-Bold";
-    case "subheading":
-      return "Inter-SemiBold";
-    case "body":
-      return "Inter-Regular";
-    case "button":
-      return "Inter-Medium";
-    default:
-      return "Inter-Regular";
-  }
-};
-
 const Typography: React.FC<TypographyProps> = ({
   variant,
   style,
@@ -42,9 +25,9 @@ const Typography: React.FC<TypographyProps> = ({
   const getFontSize = () => {
     switch (variant) {
       case "heading":
-        return Math.round(windowWidth * 0.06);
-      case "subheading":
         return Math.round(windowWidth * 0.05);
+      case "subheading":
+        return Math.round(windowWidth * 0.045);
       case "body":
         return Math.round(windowWidth * 0.04);
       case "button":
@@ -54,11 +37,26 @@ const Typography: React.FC<TypographyProps> = ({
     }
   };
 
-  const fontFamily = getFontFamily(variant);
+  const getFontWeight = () => {
+    switch (variant) {
+      case "heading":
+        return "bold";
+      case "subheading":
+        return "bold";
+      case "body":
+        return "normal";
+      case "button":
+        return "bold";
+      default:
+        return "normal";
+    }
+  };
+
   const fontSize = getFontSize();
+  const fontWeight = getFontWeight();
 
   return (
-    <Text style={[styles.text, { fontFamily, fontSize }, style]}>
+    <Text style={[styles.text, { fontSize, fontWeight }, style]}>
       {children}
     </Text>
   );

@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: Common.Colors.white,
     fontSize: 16,
-    fontFamily: Common.getFontFamily("button"),
   },
   primaryButtonText: {
     // Additional styles for the primary button text, if needed

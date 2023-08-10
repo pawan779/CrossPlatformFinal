@@ -4,8 +4,13 @@ import Header from "../../components/common/Header";
 import { Common } from "../../components/common";
 import Button from "../../components/common/Button";
 import PostCard from "./components/PostCard";
+import { StackNavigationProp } from "@react-navigation/stack";
 
-const ProfileScreen: React.FC = () => {
+interface UpdateProfileProps {
+  navigation: StackNavigationProp<any>;
+}
+
+const ProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
   const [user, setUser] = React.useState({
     firstName: "Pawan",
     lastName: "Dharel",
@@ -72,7 +77,10 @@ const ProfileScreen: React.FC = () => {
           </View>
         </View>
 
-        <Button label="Follow" />
+        <Button
+          label="Follow"
+          onPress={() => navigation.navigate("UpdateProfileScreen")}
+        />
         <Text style={styles.bio}>Bio: {user.bio}</Text>
       </View>
 
@@ -91,6 +99,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
+    paddingVertical: 20,
   },
   profileImage: {
     width: 120,

@@ -1,15 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Colors } from "../common/Colors";
 
 interface LongTextWithToggleProps {
   initialText: string;
+  maxLines?: number;
 }
 
 const LongTextWithToggle: React.FC<LongTextWithToggleProps> = ({
   initialText,
+  maxLines = 2,
 }) => {
   const [showFullText, setShowFullText] = useState(false);
+  const [isTextOverflowing, setIsTextOverflowing] = useState(false);
+  const textRef = useRef<View>(null);
+
+  useEffect(() => {
+    if (textRef.current) {
+      textRef.current.measure((x, y, width, height) => {
+        const lineHeight = Math.ceil(height / maxLines);
+        setIsTextOverflowing(lineHeight < 18); // You can adjust the lineHeight threshold as needed
+      });
+    }
+  }, []);
 
   const toggleText = () => {
     setShowFullText(!showFullText);
@@ -17,18 +29,22 @@ const LongTextWithToggle: React.FC<LongTextWithToggleProps> = ({
 
   return (
     <View style={styles.container}>
-      <Text
-        numberOfLines={showFullText ? undefined : 2}
-        style={{ color: "#cecece" }}
-        ellipsizeMode="middle"
-      >
-        {initialText}
-      </Text>
-      <TouchableOpacity onPress={toggleText}>
-        <Text style={styles.toggleButton}>
-          {showFullText ? "...less" : "...more"}
+      <View ref={textRef}>
+        <Text
+          numberOfLines={showFullText ? undefined : maxLines}
+          style={{ color: "#cecece" }}
+          ellipsizeMode="middle"
+        >
+          {initialText}
         </Text>
-      </TouchableOpacity>
+      </View>
+      {isTextOverflowing && (
+        <TouchableOpacity onPress={toggleText}>
+          <Text style={styles.toggleButton}>
+            {showFullText ? "...less" : "...more"}
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

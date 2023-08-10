@@ -17,7 +17,7 @@ import { LinearGradient } from "expo-linear-gradient";
 interface CardData {
   id: number;
   text: string;
-  image: string;
+  image?: string;
   userId: number;
   likeCount: number;
 }
@@ -56,7 +56,7 @@ const ImageSlider: React.FC = () => {
     {
       id: 5,
       text: " Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam voluptatem quaerat minus accusantium ducimus doloribus deserunt eum inventore eaque aspernatur, iusto quo, voluptatibus sint quos fuga possimus cumque, debitis amet.", // You can replace this with your desired text
-      image: "https://source.unsplash.com/random",
+      image: "",
       userId: 5, // You can replace this with the appropriate user ID
       likeCount: 5, // You can replace this with the appropriate like count
     },
@@ -68,14 +68,18 @@ const ImageSlider: React.FC = () => {
     return (
       <View style={styles.card} key={index.toString()}>
         <ProfileCard />
-        <Image source={{ uri: cardData?.image }} style={styles.image} />
-        <LinearGradient
-          colors={["transparent", "rgba(0,0,0,.7)"]}
-          style={{
-            ...StyleSheet.absoluteFillObject,
-            zIndex: 1,
-          }}
-        />
+        {cardData?.image && (
+          <>
+            <Image source={{ uri: cardData?.image }} style={styles.image} />
+            <LinearGradient
+              colors={["transparent", "rgba(0,0,0,.7)"]}
+              style={{
+                ...StyleSheet.absoluteFillObject,
+                zIndex: 1,
+              }}
+            />
+          </>
+        )}
       </View>
     );
   };
@@ -105,7 +109,6 @@ const ImageSlider: React.FC = () => {
         onTapCard={swipeLeft}
         cards={cards}
         cardIndex={cardIndex}
-        // cardVerticalMargin={80}
         renderCard={renderCard}
         onSwipedAll={onSwipedAllCards}
         stackSize={3}
@@ -114,12 +117,7 @@ const ImageSlider: React.FC = () => {
         swipeBackCard
         infinite
         containerStyle={{ flex: 1, width: "100%", height: "100%" }}
-      >
-        <Button
-          onPress={() => swiperRef.current?.swipeBack()}
-          title="Swipe Back"
-        />
-      </Swiper>
+      />
     </View>
   );
 };

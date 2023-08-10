@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { View, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import LongTextWithToggle from "../../../components/Text/LongTextWithToggle";
+import Typography from "../../../components/common/Typography";
+import { Common } from "../../../components/common";
+import { useNavigation } from "@react-navigation/native";
 
 const ProfileCard: React.FC = () => {
   const [isLiked, setIsLiked] = useState(false);
@@ -10,10 +13,15 @@ const ProfileCard: React.FC = () => {
     setIsLiked(!isLiked);
   };
 
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
-        <TouchableOpacity style={styles.iconButton}>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => navigation.navigate("ProfileScreen")}
+        >
           <Image
             source={{ uri: "https://source.unsplash.com/random" }}
             style={styles.avatar}
@@ -25,6 +33,12 @@ const ProfileCard: React.FC = () => {
             size={30}
             color={isLiked ? "red" : "#fff"}
           />
+          <Typography
+            variant="subheading"
+            style={{ color: Common.Colors.white, marginTop: 10 }}
+          >
+            20
+          </Typography>
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconButton}>
           <FontAwesome
@@ -53,6 +67,7 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     padding: 15,
+    alignItems: "center",
   },
   avatar: {
     width: 40,

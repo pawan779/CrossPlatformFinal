@@ -4,21 +4,25 @@ import Constant from "expo-constants";
 import { Common } from "./index";
 import Typography from "./Typography";
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  title: string;
+}
+
+const Header: React.FC<HeaderProps> = ({ title = "Connectify" }) => {
   return (
     <View
       style={{
         width: "100%",
         paddingTop: Constant.statusBarHeight,
         padding: 10,
-        backgroundColor: Common.Colors.primary,
+        backgroundColor: Common.Colors.white,
       }}
     >
       <Typography
         variant="subheading"
-        style={{ color: "#fff", textAlign: "center" }}
+        style={{ color: "#000", textAlign: "center" }}
       >
-        Connectify
+        {title}
       </Typography>
     </View>
   );

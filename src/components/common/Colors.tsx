@@ -6,4 +6,5 @@ export const Colors = {
   accent: "#FF9500",
   neutral: "#CCCCCC",
   white: "#FFFFFF",
+  black: "#000000",
 };

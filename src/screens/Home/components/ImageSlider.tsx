@@ -12,6 +12,7 @@ import {
 import { Common } from "../../../components/common";
 import ProfileCard from "./ProfileCard";
 import Icon from "@expo/vector-icons/FontAwesome5";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface CardData {
   id: number;
@@ -68,36 +69,13 @@ const ImageSlider: React.FC = () => {
       <View style={styles.card} key={index.toString()}>
         <ProfileCard />
         <Image source={{ uri: cardData?.image }} style={styles.image} />
-        <Text>{cardData.likeCount} likes</Text>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            onPress={() => {
-              const updatedCards = cards.map((card) => {
-                if (card.id === cardData.id) {
-                  return {
-                    ...card,
-                    likeCount: card.likeCount + 1,
-                  };
-                }
-                return card;
-              });
-
-              setCards(updatedCards);
-            }}
-            style={styles.button}
-          >
-            <Icon name="thumbs-up" size={40} color="blue" />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {
-              // Add your share logic here
-            }}
-            style={styles.button}
-          >
-            <Icon name="share-alt" size={20} color="green" />
-          </TouchableOpacity>
-        </View>
+        <LinearGradient
+          colors={["transparent", "rgba(0,0,0,.7)"]}
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            zIndex: 1,
+          }}
+        />
       </View>
     );
   };
@@ -113,7 +91,7 @@ const ImageSlider: React.FC = () => {
   const swipeLeft = () => {
     if (swiperRef.current) {
       swiperRef.current.swipeLeft();
-      setCardIndex((prevIndex) => prevIndex - 1); // Go to the previous slide
+      setCardIndex((prevIndex) => prevIndex - 1);
     }
   };
 
@@ -124,22 +102,18 @@ const ImageSlider: React.FC = () => {
       <Swiper
         ref={swiperRef}
         onSwiped={(index: number) => setCardIndex(index)}
-        // onSwipedLeft={() => onSwiped("left")}
-        // onSwipedRight={() => onSwiped("right")}
-        // onSwipedTop={() => onSwiped("top")}
-        // onSwipedBottom={() => onSwiped("bottom")}
         onTapCard={swipeLeft}
         cards={cards}
         cardIndex={cardIndex}
-        cardVerticalMargin={80}
+        // cardVerticalMargin={80}
         renderCard={renderCard}
         onSwipedAll={onSwipedAllCards}
         stackSize={3}
-        stackSeparation={15}
         animateOverlayLabelsOpacity
         animateCardOpacity
         swipeBackCard
         infinite
+        containerStyle={{ flex: 1, width: "100%", height: "100%" }}
       >
         <Button
           onPress={() => swiperRef.current?.swipeBack()}
@@ -153,15 +127,15 @@ const ImageSlider: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5FCFF",
+    backgroundColor: "#000",
   },
   card: {
-    height: Dimensions.get("window").height - 200,
-    borderRadius: 4,
-    borderWidth: 2,
-    borderColor: "#E8E8E8",
-    justifyContent: "center",
-    backgroundColor: "white",
+    height: Dimensions.get("window").height - 70,
+    width: Dimensions.get("window").width,
+    // justifyContent: "center",
+    backgroundColor: "#000",
+    marginLeft: -20,
+    marginTop: -60,
   },
   text: {
     textAlign: "center",
@@ -170,8 +144,7 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    borderRadius: 4,
-    resizeMode: "cover",
+    resizeMode: "contain",
   },
   done: {
     textAlign: "center",
@@ -183,7 +156,8 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   button: {
     flexDirection: "row",

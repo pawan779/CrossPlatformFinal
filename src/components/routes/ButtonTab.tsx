@@ -8,6 +8,7 @@ import Home from "../../screens/Home";
 import styles from "./styles";
 import { Common } from "../common";
 import { View } from "react-native";
+import ProfileScreen from "../../screens/Profile";
 
 type RoutesParamList = {
   Home: undefined;
@@ -36,9 +37,7 @@ const ButtonTab: React.FC = () => {
           return (
             <View
               style={{
-                backgroundColor: focused
-                  ? Common.Colors.primary
-                  : "transparent",
+                backgroundColor: focused ? Common.Colors.white : "transparent",
                 padding: 7,
                 borderTopStartRadius: 10,
                 borderBottomEndRadius: 10,
@@ -47,7 +46,7 @@ const ButtonTab: React.FC = () => {
               <MaterialCommunityIcons
                 name={iconName}
                 size={25}
-                color={focused ? Common.Colors.white : Common.Colors.primary}
+                color={focused ? Common.Colors.black : Common.Colors.white}
               />
             </View>
           );
@@ -58,16 +57,17 @@ const ButtonTab: React.FC = () => {
         tabBarShowLabel: false,
 
         tabBarStyle: {
-          backgroundColor: "#fff",
-          //   height: 60,
+          backgroundColor: "#000",
+          height: 70,
           paddingBottom: 10,
+          // border: "none",
         },
       })}
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Post" component={Home} />
       <Tab.Screen name="Notification" component={Home} />
-      <Tab.Screen name="More" component={Home} />
+      <Tab.Screen name="More" component={ProfileScreen} />
       {/* Add other screens as needed */}
     </Tab.Navigator>
   );

@@ -29,6 +29,7 @@ const AppLoader: React.FC = () => {
   if (!fontsLoaded) {
     return null;
   }
+  return <View></View>;
 };
 
 const styles = StyleSheet.create({

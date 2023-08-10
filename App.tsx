@@ -9,9 +9,9 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar style={Platform.OS == "ios" ? "light" : "auto"} />
+      {/* <AppLoader /> */}
       <SafeAreaView edges={["top"]} style={styles.container}>
         <NavigationContainer>
-          <AppLoader />
           <Routes />
         </NavigationContainer>
       </SafeAreaView>

@@ -50,7 +50,7 @@ const Typography: React.FC<TypographyProps> = ({
       case "button":
         return Math.round(windowWidth * 0.045);
       default:
-        return Math.round(windowWidth * 0.04);
+        return Math.round(windowWidth * 0.03);
     }
   };
 

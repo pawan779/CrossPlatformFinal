@@ -1,107 +1,75 @@
-import React, { ReactElement, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import React, { useState } from "react";
+import { TextInput, View, TouchableOpacity, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { Common } from "./";
 
-interface CustomInputProps {
-  placeholder?: string;
+interface CommonTextInputProps {
+  placeholder: string;
   value: string;
   onChangeText: (text: string) => void;
-  isError?: boolean;
-  errorMessage?: string;
-  isPassword?: boolean;
-  multiline?: boolean;
-  validationCheck?: ReactElement;
+  error?: boolean;
+  secureTextEntry?: boolean;
+  keyboardType?: "default" | "numeric" | "email-address" | "phone-pad";
 }
 
-const CustomInput: React.FC<CustomInputProps> = ({
+const CommonTextInput: React.FC<CommonTextInputProps> = ({
   placeholder,
   value,
   onChangeText,
-  isError = true,
-  errorMessage = "",
-  isPassword = false,
-  multiline = false,
-  validationCheck,
+  error = false,
+  secureTextEntry = false,
+  keyboardType = "default",
 }) => {
-  const [hide, setHide] = useState<boolean>(true);
-
-  const handleTextChange = (text: string) => {
-    onChangeText(text);
-  };
-
-  const togglePasswordVisibility = () => {
-    setHide(!hide);
-  };
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <View style={[styles.container, { borderColor: isError ? "red" : "#000" }]}>
+    <View style={[styles.inputContainer, error ? styles.inputError : null]}>
       <TextInput
+        style={styles.input}
         placeholder={placeholder}
+        onChangeText={onChangeText}
         value={value}
-        onChangeText={handleTextChange}
-        style={[
-          styles.input,
-          { color: isError ? "#FF0000" : "#000000" },
-          multiline && { height: 100 }, // Customize height for multiline inputs
-        ]}
-        multiline={multiline}
-        secureTextEntry={isPassword && hide}
-        onBlur={validationCheck}
-        // onSubmitEditing={validationCheck}
+        secureTextEntry={secureTextEntry && !showPassword}
+        keyboardType={keyboardType}
       />
-      {isPassword && (
+      {secureTextEntry && (
         <TouchableOpacity
-          style={styles.passwordToggle}
-          onPress={togglePasswordVisibility}
+          onPress={() => setShowPassword(!showPassword)}
+          style={styles.eyeIconContainer}
         >
-          <Text>{hide ? "Show" : "Hide"}</Text>
+          <Ionicons
+            name={showPassword ? "eye-off" : "eye"}
+            size={24}
+            color={Common.Colors.black}
+          />
         </TouchableOpacity>
       )}
-      {isError && <Text style={styles.errorText}>{errorMessage}</Text>}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    borderColor: "#000000",
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
+  inputContainer: {
     width: "100%",
-    alignItems: "center",
+    height: 40,
+    borderColor: Common.Colors.border,
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
     flexDirection: "row",
-    backgroundColor: "#ffffff",
-
-    // box shadow
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    alignItems: "center",
   },
   input: {
-    fontSize: 16,
-    fontFamily: "Arial",
-    width: "90%",
-    paddingVertical: 5,
-    // Customize font family as per your requirement
+    flex: 1,
+    height: "100%",
   },
-
-  errorText: {
-    color: "#FF0000",
-    marginTop: 5,
+  inputError: {
+    borderColor: Common.Colors.error,
+  },
+  eyeIconContainer: {
+    paddingHorizontal: 8,
   },
 });
 
-export default CustomInput;
+export default CommonTextInput;

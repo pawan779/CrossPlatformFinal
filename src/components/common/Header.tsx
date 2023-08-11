@@ -5,6 +5,7 @@ import Constant from "expo-constants";
 import { Common } from "./index";
 import Typography from "./Typography";
 import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 
 interface HeaderProps {
   title: string;
@@ -23,6 +24,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <View style={styles.container}>
+      <StatusBar style="light" />
       {backreq && (
         <TouchableOpacity style={styles.backButton} onPress={onBackPress}>
           <Ionicons name="arrow-back" size={24} color={Common.Colors.white} />

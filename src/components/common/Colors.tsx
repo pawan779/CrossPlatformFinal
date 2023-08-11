@@ -9,4 +9,5 @@ export const Colors = {
   white: "#FFFFFF",
   black: "#000000",
   error: "#FF3B30",
+  border: "#8c8f98",
 };

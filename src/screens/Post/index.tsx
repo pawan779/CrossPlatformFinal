@@ -5,6 +5,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Header from "../../components/common/Header";
@@ -24,8 +25,8 @@ const AddPost: React.FC = () => {
       quality: 1,
     });
 
-    if (!result.cancelled) {
-      setImageUri(result.uri);
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
     }
   };
 
@@ -36,7 +37,7 @@ const AddPost: React.FC = () => {
   return (
     <View style={styles.container}>
       <Header title="Add Post" />
-      <View style={styles.content}>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <Typography style={styles.label}>Title</Typography>
         <TextInput
           style={styles.input}
@@ -68,7 +69,7 @@ const AddPost: React.FC = () => {
             Select Image
           </Typography>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
 
       <Button label="Add Post" onPress={() => {}} />
     </View>

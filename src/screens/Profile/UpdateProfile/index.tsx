@@ -12,22 +12,38 @@ import Header from "../../../components/common/Header";
 import Button from "../../../components/common/Button";
 import Typography from "../../../components/common/Typography";
 import { Common } from "../../../components/common";
+import CommonTextInput from "../../../components/common/CustomInput";
 
-interface User {
+interface FormData {
   firstName: string;
   lastName: string;
   email: string;
   profileImageUri: string | null;
   bio: string;
+  phone: string;
+}
+interface ErrorData {
+  firstName: boolean;
+  lastName: boolean;
+  bio: boolean;
+  phone: boolean;
 }
 
 const UpdateProfile: React.FC = () => {
-  const [user, setUser] = useState<User>({
+  const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
     email: "user@example.com",
     profileImageUri: "https://source.unsplash.com/random?user",
     bio: "",
+    phone: "",
+  });
+
+  const [errorData, setErrorData] = useState<ErrorData>({
+    firstName: false,
+    lastName: false,
+    bio: false,
+    phone: false,
   });
 
   const selectProfileImage = async () => {
@@ -39,52 +55,66 @@ const UpdateProfile: React.FC = () => {
     });
 
     if (!result.canceled) {
-      setUser((prevUser) => ({
+      setFormData((prevUser) => ({
         ...prevUser,
         profileImageUri: result.assets[0].uri,
       }));
     }
   };
 
+  const handleChange = (key: keyof FormData, value: string) => {
+    setFormData((prevData) => ({ ...prevData, [key]: value }));
+    setErrorData((prevErrorData) => ({ ...prevErrorData, [key]: false }));
+  };
+
   return (
     <View style={styles.container}>
       <Header title="Update Profile" />
       <View style={styles.content}>
-        {user.profileImageUri && (
+        {formData.profileImageUri && (
           <View style={styles.profileImageContainer}>
             <TouchableOpacity onPress={selectProfileImage}>
               <Image
-                source={{ uri: user.profileImageUri }}
+                source={{ uri: formData.profileImageUri }}
                 style={styles.profileImage}
               />
             </TouchableOpacity>
           </View>
         )}
         <Typography style={styles.label}>First Name</Typography>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter first name"
-          value={user.firstName}
-          onChangeText={(text) => setUser({ ...user, firstName: text })}
+        <CommonTextInput
+          placeholder="First Name"
+          value={formData.firstName}
+          onChangeText={(text) => handleChange("firstName", text)}
+          error={errorData.firstName}
         />
 
         <Typography style={styles.label}>Last Name</Typography>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter last name"
-          value={user.lastName}
-          onChangeText={(text) => setUser({ ...user, lastName: text })}
+        <CommonTextInput
+          placeholder="Last Name"
+          value={formData.lastName}
+          onChangeText={(text) => handleChange("lastName", text)}
+          error={errorData.lastName}
+        />
+
+        <Typography style={styles.label}>Phone Number</Typography>
+        <CommonTextInput
+          placeholder="Phone Number"
+          value={formData.phone}
+          onChangeText={(text) => handleChange("phone", text)}
+          error={errorData.phone}
+          keyboardType="phone-pad"
         />
 
         <Typography style={styles.label}>Email</Typography>
-        <Text style={styles.emailText}>{user.email}</Text>
+        <Text style={styles.emailText}>{formData.email}</Text>
 
         <Typography style={styles.label}>Bio</Typography>
         <TextInput
           style={styles.bioInput}
           placeholder="Tell us about yourself..."
-          value={user.bio}
-          onChangeText={(text) => setUser({ ...user, bio: text })}
+          value={formData.bio}
+          onChangeText={(text) => handleChange("bio", text)}
           multiline
         />
       </View>

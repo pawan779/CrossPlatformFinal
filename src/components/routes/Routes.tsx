@@ -5,6 +5,7 @@ import ButtonTab from "./ButtonTab";
 import LoginScreen from "../../screens/Auth/Login";
 import ProfileScreen from "../../screens/Profile";
 import UpdateProfile from "../../screens/Profile/UpdateProfile";
+import RegisterScreen from "../../screens/Auth/Register";
 
 const Stack = createStackNavigator();
 
@@ -16,8 +17,9 @@ const Routes: React.FC = () => {
         animationEnabled: true,
       }}
     >
-      <Stack.Screen name="Tab" component={ButtonTab} />
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
+      <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+      <Stack.Screen name="Dashboard" component={ButtonTab} />
       <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
       <Stack.Screen name="UpdateProfileScreen" component={UpdateProfile} />
       {/* <Stack.Screen name="Home" component={Home} /> */}

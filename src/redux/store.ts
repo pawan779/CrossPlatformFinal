@@ -3,6 +3,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import logger from "redux-logger";
 import rootReducer from "./roootReducer";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 declare global {
   interface Window {
@@ -12,8 +13,8 @@ declare global {
 
 const persistConfig = {
   key: "root",
-  storage,
-  // whitelist: ["dashboard"],
+  storage: AsyncStorage,
+  whitelist: ["authSlice"],
   // blacklist: ["dashboard"],
 };
 

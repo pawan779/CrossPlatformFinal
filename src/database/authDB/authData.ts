@@ -82,8 +82,11 @@ export const loginUser = async (data: {
       email,
       password
     );
-    const user = userCredential.user;
-    console.log("user", user);
+    const user = {
+      email: userCredential.user.email,
+      id: userCredential.user.uid,
+    };
+    return user;
   } catch (error) {
     console.log("Registration error:", error);
     Toast.show({

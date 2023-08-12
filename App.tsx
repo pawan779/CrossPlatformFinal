@@ -9,6 +9,7 @@ import { persistor, store } from "./src/redux/store";
 import Toast from "react-native-toast-message";
 import Constant from "expo-constants";
 import { PersistGate } from "redux-persist/integration/react";
+import CustomLoader from "./src/components/common/loading/CustomLoading";
 
 export default function App() {
   return (
@@ -16,7 +17,7 @@ export default function App() {
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <StatusBar style={Platform.OS == "ios" ? "light" : "auto"} />
-
+          {/* <CustomLoader /> */}
           {/* <AppLoader /> */}
           <SafeAreaView edges={["top"]} style={styles.container}>
             <NavigationContainer>

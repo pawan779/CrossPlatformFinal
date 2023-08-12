@@ -6,15 +6,23 @@ import CustomTabNavigation from "./components/TabBar";
 import { useDispatch, useSelector } from "react-redux";
 import { getPost } from "../../database/postDB";
 import { getPostAction } from "../../redux/postSlice";
+import { startLoadingAction, stopLoadingAction } from "../../redux/authSlice";
 
 const Home: React.FC = () => {
   const dispatch = useDispatch();
   const posts = useSelector((state: any) => state?.postSlice?.post);
+  const id = useSelector((state: any) => state?.authSlice?.user?.id);
 
   const loadPost = async () => {
-    const posts = await getPost();
-    dispatch(getPostAction(posts));
-    console.log(posts);
+    try {
+      dispatch(startLoadingAction());
+      const posts = await getPost(id);
+      dispatch(getPostAction(posts));
+      dispatch(stopLoadingAction());
+    } catch (error) {
+      console.log(error);
+      dispatch(stopLoadingAction());
+    }
   };
 
   useEffect(() => {

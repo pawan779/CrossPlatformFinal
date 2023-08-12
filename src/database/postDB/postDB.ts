@@ -7,11 +7,15 @@ import {
   addDoc,
   getDocs,
   getDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
 } from "firebase/firestore"; // Import 'collection' and 'addDoc'
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import uploadImageToCloudinary from "../cloudinary";
 import { getUserById } from "../authDB";
 import { errorMessage } from "../../components/common/ErrorMessage";
+import { CardDataProps } from "../../screens/Home/components/ProfileCard";
 
 export const addPost = async (data: {
   title?: string;
@@ -44,10 +48,11 @@ export const addPost = async (data: {
   } catch (error) {
     console.log("Error adding post:", error);
     errorMessage(error);
+    throw error;
   }
 };
 
-export const getPost = async () => {
+export const getPost = async (userId: string) => {
   const data = [];
   const dbCollection = collection(db, "posts");
 
@@ -60,6 +65,7 @@ export const getPost = async () => {
       const post = {
         ...doc.data(),
         id: doc.id,
+        isLikedbyMe: doc.data().likedBy.includes(userId),
         user: createdUser,
       };
       data.push(post);
@@ -67,18 +73,23 @@ export const getPost = async () => {
   } catch (error) {
     console.log("Error:", error);
     errorMessage(error);
+    throw error;
   }
 
   return data;
 };
 
-export const getPostById = async (id: string) => {
+export const getPostById = async (id: string, userId: string) => {
   try {
     const usersCollection = doc(db, "posts", id);
     const docSnap = await getDoc(usersCollection);
 
     if (docSnap.exists()) {
-      return { ...docSnap.data(), id: docSnap.id };
+      return {
+        ...docSnap.data(),
+        isLikedbyMe: docSnap.data().likedBy.includes(userId),
+        id: docSnap.id,
+      };
     } else {
       return null;
     }
@@ -100,6 +111,7 @@ export const getPostByUserId = async (userId) => {
       if (postData.userId === userId) {
         const post = {
           ...postData,
+          isLikedbyMe: postData.likedBy.includes(userId),
           id: doc.id,
         };
         userPosts.push(post);
@@ -111,4 +123,56 @@ export const getPostByUserId = async (userId) => {
   }
 
   return userPosts;
+};
+
+export const updateLikePost = async (
+  userPost: any,
+  postId: string,
+  userId: string
+) => {
+  const postDocRef = doc(db, "posts", postId);
+
+  try {
+    const postDoc = await getDoc(postDocRef);
+    if (postDoc.exists()) {
+      const post = postDoc.data();
+
+      // Check if the user has already liked the post
+      if (post.likedBy.includes(userId) && post.likedBy.length > 0) {
+        // User has already liked, so unlike the post
+        await updateDoc(postDocRef, {
+          likeCount: post.likeCount - 1,
+          likedBy: arrayRemove(userId),
+          isLikedbyMe: false,
+        });
+        return {
+          ...userPost,
+          id: postId,
+          likeCount: post.likeCount - 1,
+          likedBy: arrayRemove(userId),
+          isLikedbyMe: false,
+        };
+      } else {
+        // User has not liked, so like the post
+        await updateDoc(postDocRef, {
+          likeCount: post.likeCount + 1,
+          likedBy: arrayUnion(userId),
+          isLikedbyMe: true,
+        });
+        return {
+          ...userPost,
+          id: postId,
+          likeCount: post.likeCount + 1,
+          likedBy: arrayUnion(userId),
+          isLikedbyMe: true,
+        };
+      }
+    } else {
+      console.log("Post not found");
+    }
+  } catch (error) {
+    console.error("Error liking post:", error);
+    errorMessage(error);
+    throw error;
+  }
 };

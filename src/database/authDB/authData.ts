@@ -147,8 +147,6 @@ export const updateUser = async (data: {
   try {
     const { firstName, lastName, phone, bio, profileImage, userId } = data;
 
-    console.log("profileImage", profileImage);
-
     let profileImageRef;
     if (profileImage) {
       profileImageRef = await uploadImageToCloudinary(profileImage);
@@ -158,13 +156,18 @@ export const updateUser = async (data: {
 
     const userDocRef = doc(db, "users", userId);
 
-    await updateDoc(userDocRef, {
+    const updateObject = {
       firstName,
       lastName,
       phone,
       bio,
-      profileImage: profileImageRef,
-    });
+    };
+
+    if (profileImageRef) {
+      updateObject.profileImage = profileImageRef;
+    }
+
+    await updateDoc(userDocRef, updateObject);
 
     Toast.show({
       type: "success",
@@ -172,14 +175,14 @@ export const updateUser = async (data: {
       text2: "User updated successfully",
     });
 
-    const data = {
+    const payload = {
       firstName,
       lastName,
       phone,
       bio,
       profileImage: profileImageRef,
     };
-    return data;
+    return payload;
   } catch (error) {
     console.error("Error updating user:", error);
     errorMessage(error);

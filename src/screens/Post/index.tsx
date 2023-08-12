@@ -16,6 +16,7 @@ import { Toast } from "react-native-toast-message/lib/src/Toast";
 import * as postDb from "../../database/postDB";
 import { useDispatch, useSelector } from "react-redux";
 import { getPostAction } from "../../redux/postSlice";
+import { startLoadingAction, stopLoadingAction } from "../../redux/authSlice";
 
 const AddPost: React.FC = () => {
   const [title, setTitle] = useState("");
@@ -62,9 +63,16 @@ const AddPost: React.FC = () => {
         text2: "Post title or image is missing",
       });
     } else {
-      await postDb.addPost({ title, image: imageUri, userId });
-      clearPost();
-      loadPost();
+      try {
+        dispatch(startLoadingAction());
+        await postDb.addPost({ title, image: imageUri, userId });
+        clearPost();
+        loadPost();
+        dispatch(stopLoadingAction());
+      } catch (error) {
+        console.log(error);
+        dispatch(stopLoadingAction());
+      }
     }
   };
 

@@ -15,7 +15,12 @@ import { Common } from "../../../components/common";
 import CommonTextInput from "../../../components/common/CustomInput";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../../../database/authDB";
-import { getUserAction, updateUaserAction } from "../../../redux/authSlice";
+import {
+  getUserAction,
+  startLoadingAction,
+  stopLoadingAction,
+  updateUaserAction,
+} from "../../../redux/authSlice";
 
 interface FormData {
   firstName: string;
@@ -41,7 +46,7 @@ const UpdateProfile: React.FC = () => {
     phone: "",
   });
 
-  const [base64Image, setBase64Image] = useState<string | null>(null);
+  const [base64Image, setBase64Image] = useState<string>("");
 
   const [errorData, setErrorData] = useState<ErrorData>({
     firstName: false,
@@ -96,6 +101,7 @@ const UpdateProfile: React.FC = () => {
 
   const handleUpdateProfile = async () => {
     try {
+      dispatch(startLoadingAction());
       const res = await updateUser({
         ...formData,
         profileImage: base64Image,
@@ -103,8 +109,10 @@ const UpdateProfile: React.FC = () => {
       });
 
       dispatch(updateUaserAction(res));
+      dispatch(stopLoadingAction());
     } catch (error) {
       console.log("error123", error);
+      dispatch(stopLoadingAction());
     }
   };
 

@@ -11,7 +11,6 @@ const initialState = {
       likedBy: [],
     },
   ],
-  isLoading: true,
 };
 
 export const postSlice = createSlice({
@@ -20,12 +19,18 @@ export const postSlice = createSlice({
   reducers: {
     getPostAction: (state, action) => {
       state.post = action.payload;
-      state.isLoading = false;
+    },
+    likePostAction: (state, action) => {
+      const newPost = [...state.post];
+      const index = newPost.findIndex((post) => post.id === action.payload.id);
+      newPost[index] = action.payload;
+
+      state.post = newPost;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { getPostAction } = postSlice.actions;
+export const { getPostAction, likePostAction } = postSlice.actions;
 
 export default postSlice.reducer;

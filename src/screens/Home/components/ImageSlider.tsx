@@ -8,6 +8,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import { Common } from "../../../components/common";
 import ProfileCard from "./ProfileCard";
@@ -70,6 +71,11 @@ const ImageSlider: React.FC<CardDataProps> = (props) => {
 
   return (
     <View style={styles.container}>
+      {/* <ScrollView
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        style={{ flex: 1 }}
+      > */}
       <Swiper
         ref={swiperRef}
         onSwiped={(index: number) => setCardIndex(index)}
@@ -85,6 +91,7 @@ const ImageSlider: React.FC<CardDataProps> = (props) => {
         infinite
         containerStyle={{ flex: 1, width: "100%", height: "100%" }}
       />
+      {/* </ScrollView> */}
     </View>
   );
 };

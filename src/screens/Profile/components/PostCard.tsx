@@ -1,11 +1,11 @@
 import React from "react";
 import { View, Image, StyleSheet, FlatList } from "react-native";
+import Typography from "../../../components/common/Typography";
 
 interface Post {
   id: number;
-  image: string;
-  caption: string;
-  likes: number;
+  postImage: string;
+  title: string;
 }
 
 interface PostCardProps {
@@ -19,9 +19,22 @@ const PostCard: React.FC<PostCardProps> = ({ postData }) => {
         data={postData}
         keyExtractor={(item) => item.id.toString()}
         numColumns={3}
-        renderItem={({ item }) => (
-          <Image source={{ uri: item.image }} style={styles.image} />
-        )}
+        renderItem={({ item }) =>
+          item?.postImage ? (
+            <Image source={{ uri: item?.postImage }} style={styles.image} />
+          ) : (
+            <View style={styles.image}>
+              <Typography
+                variant="body"
+                numberOfLine={2}
+                ellipsizeMode="tail"
+                style={{ fontSize: 12 }}
+              >
+                {item.title}{" "}
+              </Typography>
+            </View>
+          )
+        }
       />
     </View>
   );
@@ -38,6 +51,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#fff",
     borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import Button from "../../../components/common/Button";
 import Typography from "../../../components/common/Typography";
 import { Common } from "../../../components/common";
 import CommonTextInput from "../../../components/common/CustomInput";
+import { useSelector } from "react-redux";
 
 interface FormData {
   firstName: string;
@@ -39,6 +40,8 @@ const UpdateProfile: React.FC = () => {
     phone: "",
   });
 
+  const [base64Image, setBase64Image] = useState<string | null>(null);
+
   const [errorData, setErrorData] = useState<ErrorData>({
     firstName: false,
     lastName: false,
@@ -50,8 +53,8 @@ const UpdateProfile: React.FC = () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
+      quality: 0.5,
+      base64: true,
     });
 
     if (!result.canceled) {
@@ -59,6 +62,7 @@ const UpdateProfile: React.FC = () => {
         ...prevUser,
         profileImageUri: result.assets[0].uri,
       }));
+      setBase64Image(result.assets[0].base64);
     }
   };
 
@@ -67,20 +71,35 @@ const UpdateProfile: React.FC = () => {
     setErrorData((prevErrorData) => ({ ...prevErrorData, [key]: false }));
   };
 
+  const { user } = useSelector((state: any) => state?.authSlice);
+
+  useEffect(() => {
+    if (user) {
+      setFormData((prevData) => ({
+        ...prevData,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        email: user?.email,
+        profileImageUri: user?.profileImage,
+        bio: user?.bio,
+        phone: user?.phone,
+      }));
+    }
+  }, []);
+
   return (
     <View style={styles.container}>
       <Header title="Update Profile" />
       <View style={styles.content}>
-        {formData.profileImageUri && (
-          <View style={styles.profileImageContainer}>
-            <TouchableOpacity onPress={selectProfileImage}>
-              <Image
-                source={{ uri: formData.profileImageUri }}
-                style={styles.profileImage}
-              />
-            </TouchableOpacity>
-          </View>
-        )}
+        <View style={styles.profileImageContainer}>
+          <TouchableOpacity onPress={selectProfileImage}>
+            <Image
+              source={{ uri: formData.profileImageUri }}
+              style={styles.profileImage}
+            />
+          </TouchableOpacity>
+        </View>
+
         <Typography style={styles.label}>First Name</Typography>
         <CommonTextInput
           placeholder="First Name"

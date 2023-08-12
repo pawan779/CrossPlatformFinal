@@ -8,6 +8,7 @@ import {
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { getPostByUserId } from "../postDB";
+import { errorMessage } from "../../components/common/ErrorMessage";
 
 export const registerUser = async (data: {
   firstName: string;
@@ -62,11 +63,7 @@ export const registerUser = async (data: {
     };
   } catch (error) {
     console.log("Registration error:", error);
-    Toast.show({
-      type: "error",
-      text1: "Error",
-      text2: error.message,
-    });
+    errorMessage(error);
     throw error;
   }
 };
@@ -92,11 +89,7 @@ export const loginUser = async (data: {
     return user;
   } catch (error) {
     console.log("Registration error:", error);
-    Toast.show({
-      type: "error",
-      text1: "Error",
-      text2: error.message,
-    });
+    errorMessage(error);
     throw error;
   }
 };
@@ -132,6 +125,6 @@ export const getUserById = async (id: string) => {
     }
   } catch (error) {
     console.error("Error fetching user:", error);
-    throw error;
+    errorMessage(error);
   }
 };

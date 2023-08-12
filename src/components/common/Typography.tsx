@@ -7,18 +7,21 @@ import {
   StyleProp,
   ViewStyle,
   TextStyle,
+  TextProps,
 } from "react-native";
 
 interface TypographyProps {
   variant?: "heading" | "subheading" | "body" | "button";
   style?: StyleProp<TextStyle>;
   children: React.ReactNode;
+  textProps?: TextProps;
 }
 
 const Typography: React.FC<TypographyProps> = ({
   variant,
   style,
   children,
+  textProps,
 }) => {
   const windowWidth = useWindowDimensions().width;
 
@@ -56,7 +59,7 @@ const Typography: React.FC<TypographyProps> = ({
   const fontWeight = getFontWeight();
 
   return (
-    <Text style={[styles.text, { fontSize, fontWeight }, style]}>
+    <Text style={[styles.text, { fontSize, fontWeight }, style]} {...textProps}>
       {children}
     </Text>
   );

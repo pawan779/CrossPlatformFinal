@@ -11,6 +11,7 @@ import {
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import uploadImageToCloudinary from "../cloudinary";
 import { getUserById } from "../authDB";
+import { errorMessage } from "../../components/common/ErrorMessage";
 
 export const addPost = async (data: {
   title?: string;
@@ -42,12 +43,7 @@ export const addPost = async (data: {
     });
   } catch (error) {
     console.log("Error adding post:", error);
-    Toast.show({
-      type: "error",
-      text1: "Error",
-      text2: error.message,
-    });
-    throw error;
+    errorMessage(error);
   }
 };
 
@@ -70,6 +66,7 @@ export const getPost = async () => {
     }
   } catch (error) {
     console.log("Error:", error);
+    errorMessage(error);
   }
 
   return data;
@@ -87,7 +84,7 @@ export const getPostById = async (id: string) => {
     }
   } catch (error) {
     console.error("Error fetching user:", error);
-    throw error;
+    errorMessage(error);
   }
 };
 
@@ -109,6 +106,7 @@ export const getPostByUserId = async (userId) => {
       }
     }
   } catch (error) {
+    errorMessage(error);
     console.log("Error:", error);
   }
 

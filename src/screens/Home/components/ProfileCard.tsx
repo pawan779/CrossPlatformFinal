@@ -5,8 +5,22 @@ import LongTextWithToggle from "../../../components/Text/LongTextWithToggle";
 import Typography from "../../../components/common/Typography";
 import { Common } from "../../../components/common";
 import { useNavigation } from "@react-navigation/native";
+import { FormData } from "../../Auth/Register";
 
-const ProfileCard: React.FC = () => {
+interface CardData extends FormData {
+  id: number;
+  title: string;
+  postImage?: string;
+  userId: number;
+  likeCount: number;
+  user: FormData;
+}
+
+interface ProfileCardProps {
+  data: CardData;
+}
+
+const ProfileCard: React.FC<ProfileCardProps> = (props) => {
   const [isLiked, setIsLiked] = useState(false);
 
   const handleLikePress = () => {
@@ -23,7 +37,7 @@ const ProfileCard: React.FC = () => {
           onPress={() => navigation.navigate("ProfileScreen")}
         >
           <Image
-            source={{ uri: "https://source.unsplash.com/random" }}
+            source={{ uri: props?.data?.user?.image }}
             style={styles.avatar}
           />
         </TouchableOpacity>
@@ -37,7 +51,7 @@ const ProfileCard: React.FC = () => {
             variant="subheading"
             style={{ color: Common.Colors.white, marginTop: 10 }}
           >
-            20
+            {props?.data?.likeCount}
           </Typography>
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconButton}>
@@ -48,7 +62,7 @@ const ProfileCard: React.FC = () => {
           />
         </TouchableOpacity>
       </View>
-      <LongTextWithToggle initialText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias fugiat similique esse quasi id voluptatem, ipsum animi, accusantium nesciunt exercitationem minus qui! Eum hic eveniet iure cumque corporis, deserunt doloremque." />
+      <LongTextWithToggle initialText={props?.data?.title} />
     </View>
   );
 };

@@ -17,60 +17,27 @@ import { LinearGradient } from "expo-linear-gradient";
 interface CardData {
   id: number;
   text: string;
-  image?: string;
+  postImage?: string;
   userId: number;
   likeCount: number;
 }
+interface CardDataProps {
+  data: [CardData];
+}
 
-const ImageSlider: React.FC = () => {
+const ImageSlider: React.FC<CardDataProps> = (props) => {
   const swiperRef = useRef<Swiper<CardData>>(null);
-  const [cards, setCards] = useState<CardData[]>([
-    {
-      id: 1,
-      text: "This is text", // You can replace this with your desired text
-      image: "https://awik.io/wp-content/uploads/2018/06/unsplash.jpg",
-      userId: 5, // You can replace this with the appropriate user ID
-      likeCount: 5, // You can replace this with the appropriate like count
-    },
-    {
-      id: 2,
-      text: "This is text", // You can replace this with your desired text
-      image: "https://source.unsplash.com/random",
-      userId: 5, // You can replace this with the appropriate user ID
-      likeCount: 5, // You can replace this with the appropriate like count
-    },
-    {
-      id: 3,
-      text: "This is text", // You can replace this with your desired text
-      image: "https://source.unsplash.com/random",
-      userId: 5, // You can replace this with the appropriate user ID
-      likeCount: 5, // You can replace this with the appropriate like count
-    },
-    {
-      id: 4,
-      text: "This is text", // You can replace this with your desired text
-      image: "https://source.unsplash.com/random",
-      userId: 5, // You can replace this with the appropriate user ID
-      likeCount: 5, // You can replace this with the appropriate like count
-    },
-    {
-      id: 5,
-      text: " Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam voluptatem quaerat minus accusantium ducimus doloribus deserunt eum inventore eaque aspernatur, iusto quo, voluptatibus sint quos fuga possimus cumque, debitis amet.", // You can replace this with your desired text
-      image: "",
-      userId: 5, // You can replace this with the appropriate user ID
-      likeCount: 5, // You can replace this with the appropriate like count
-    },
-  ]);
+
   const [swipedAllCards, setSwipedAllCards] = useState(false);
   const [cardIndex, setCardIndex] = useState(0);
 
   const renderCard = (cardData: CardData, index: number) => {
     return (
       <View style={styles.card} key={index.toString()}>
-        <ProfileCard />
-        {cardData?.image && (
+        <ProfileCard data={cardData} />
+        {cardData?.postImage && (
           <>
-            <Image source={{ uri: cardData?.image }} style={styles.image} />
+            <Image source={{ uri: cardData?.postImage }} style={styles.image} />
             <LinearGradient
               colors={["transparent", "rgba(0,0,0,.7)"]}
               style={{
@@ -107,7 +74,7 @@ const ImageSlider: React.FC = () => {
         ref={swiperRef}
         onSwiped={(index: number) => setCardIndex(index)}
         onTapCard={swipeLeft}
-        cards={cards}
+        cards={props?.data}
         cardIndex={cardIndex}
         renderCard={renderCard}
         onSwipedAll={onSwipedAllCards}

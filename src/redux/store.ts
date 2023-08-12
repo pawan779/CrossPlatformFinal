@@ -14,7 +14,7 @@ declare global {
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  whitelist: ["authSlice"],
+  whitelist: ["authSlice", "postSlice"],
   // blacklist: ["dashboard"],
 };
 

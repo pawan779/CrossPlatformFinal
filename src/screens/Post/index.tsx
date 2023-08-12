@@ -14,13 +14,15 @@ import Typography from "../../components/common/Typography";
 import { Common } from "../../components/common";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import * as postDb from "../../database/postDB";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getPostAction } from "../../redux/postSlice";
 
 const AddPost: React.FC = () => {
   const [title, setTitle] = useState("");
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [image, setImage] = useState(null);
   const userId = useSelector((state: any) => state?.authSlice?.user?.id);
+  const dispatch = useDispatch();
 
   const selectImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -46,6 +48,12 @@ const AddPost: React.FC = () => {
     setImage(null);
   };
 
+  const loadPost = async () => {
+    const posts = await postDb.getPost();
+    dispatch(getPostAction(posts));
+    console.log(posts);
+  };
+
   const handleAddPost = async () => {
     if (!title && !image) {
       Toast.show({
@@ -56,6 +64,7 @@ const AddPost: React.FC = () => {
     } else {
       await postDb.addPost({ title, image: imageUri, userId });
       clearPost();
+      loadPost();
     }
   };
 

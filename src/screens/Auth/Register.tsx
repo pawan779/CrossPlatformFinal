@@ -11,7 +11,7 @@ import Toast from "react-native-toast-message";
 import { useDispatch } from "react-redux";
 import { registerUserAction } from "../../redux/authSlice";
 
-interface FormData {
+export interface FormData {
   firstName: string;
   lastName: string;
   email: string;

@@ -5,8 +5,9 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
+import { getPostByUserId } from "../postDB";
 
 export const registerUser = async (data: {
   firstName: string;
@@ -46,6 +47,8 @@ export const registerUser = async (data: {
       phone,
       bio,
       profileImage,
+      followerCount: 0,
+      followingCount: 0,
     });
 
     return {
@@ -114,4 +117,21 @@ export const checkISUserLoggedIn = async () => {
     }
   });
   return isLoggedIn;
+};
+
+export const getUserById = async (id: string) => {
+  try {
+    const usersCollection = doc(db, "users", id);
+    const docSnap = await getDoc(usersCollection);
+
+    if (docSnap.exists()) {
+      const posts = await getPostByUserId(docSnap.id);
+      return { ...docSnap.data(), id: docSnap.id, postData: posts };
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    throw error;
+  }
 };

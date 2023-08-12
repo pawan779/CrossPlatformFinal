@@ -9,12 +9,14 @@ import { FormData } from "../../Auth/Register";
 import { updateLikePost } from "../../../database/postDB";
 import { useDispatch, useSelector } from "react-redux";
 import { likePostAction } from "../../../redux/postSlice";
+import { sendPushNotification } from "../../Notification/config";
+import { addNotification } from "../../../database/notificationDB/notificationData";
 
 export interface CardDataProps {
   id: number;
   title: string;
   postImage?: string;
-  userId: number;
+  userId: string;
   likeCount: number;
   isLikedbyMe: boolean;
   user: {
@@ -23,6 +25,7 @@ export interface CardDataProps {
     email: string;
     phone: string;
     profileImage: string;
+    expoToken?: string;
   };
 }
 
@@ -34,10 +37,36 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
   const userId = useSelector((state: any) => state?.authSlice?.user?.id);
 
   const dispatch = useDispatch();
+
   const handleLikePress = async (post, postId) => {
+    const likeMessage = {
+      title: "New Like",
+      body: `${props?.data?.user?.firstName} ${props?.data?.user?.lastName} liked your post`,
+      data: post,
+    };
+
     try {
       const res = await updateLikePost(post, postId, userId);
       dispatch(likePostAction(res));
+      {
+        !post.isLikedbyMe &&
+          (await sendPushNotification(
+            props?.data?.user?.expoToken,
+            likeMessage.title,
+            likeMessage.body,
+            likeMessage.data
+          ));
+
+        await addNotification({
+          title: likeMessage.title,
+          body: likeMessage.body,
+          data: likeMessage.data,
+          senderId: userId,
+          receiverId: props?.data?.userId,
+          type: "like",
+          postId: postId,
+        });
+      }
     } catch (error) {
       console.log(error);
     }

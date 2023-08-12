@@ -1,40 +1,63 @@
 // screens/NotificationList.tsx
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import { Common } from "../../components/common";
 import NotificationCard from "../../components/card/NotificationCard";
 import Header from "../../components/common/Header";
+import { useDispatch, useSelector } from "react-redux";
+import { startLoadingAction, stopLoadingAction } from "../../redux/authSlice";
+import { fetchNotifications } from "../../database/notificationDB/notificationData";
+import Typography from "../../components/common/Typography";
+import { RefreshControl } from "react-native-gesture-handler";
 
-const notifications = [
-  {
-    id: "1",
-    title: "New Message",
-    description: "You have received a new message from a friend.",
-    date: "2023-08-10",
-  },
-  {
-    id: "2",
-    title: "Event Reminder",
-    description: "Don't forget about the upcoming event tomorrow!",
-    date: "2023-08-11",
-  },
-];
+interface NotificationProps {
+  senderId: string;
+  receiverId: string;
+  postId: string;
+  type: string;
+  title: string;
+  body: string;
+  data: any;
+}
 
 const Notification: React.FC = () => {
+  const [notifications, setNotifications] = useState<NotificationProps[]>([]);
+  const userId = useSelector((state: any) => state?.authSlice?.user?.id);
+  const dispatch = useDispatch();
+
+  const getNotifications = async () => {
+    dispatch(startLoadingAction());
+    const res = await fetchNotifications(userId);
+    setNotifications(res);
+    dispatch(stopLoadingAction());
+  };
+
+  const onRefresh = () => {
+    getNotifications();
+  };
+
+  useEffect(() => {
+    onRefresh();
+  }, []);
   return (
     <View style={styles.container}>
       <Header title="Notification" />
       <View style={styles.container1}>
         <FlatList
           data={notifications}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={() => (
+            <View style={{ alignItems: "center", marginTop: 20 }}>
+              <Typography variant="body">No Notifications</Typography>
+            </View>
+          )}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={onRefresh} />
+          }
           renderItem={({ item }) => (
-            <NotificationCard
-              title={item.title}
-              description={item.description}
-              date={item.date}
-            />
+            <NotificationCard title={item.title} description={item.body} />
           )}
         />
       </View>

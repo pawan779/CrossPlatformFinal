@@ -16,8 +16,19 @@ import Toast from "react-native-toast-message";
 import Constant from "expo-constants";
 import { PersistGate } from "redux-persist/integration/react";
 import CustomLoader from "./src/components/common/loading/CustomLoading";
+import * as Notifications from "expo-notifications";
+import { useEffect } from "react";
 
 export default function App() {
+  useEffect(() => {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+      }),
+    });
+  }, []);
   return (
     <View style={styles.container}>
       <Provider store={store}>

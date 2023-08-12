@@ -25,6 +25,7 @@ export const registerUser = async (data: {
   phone: string;
   bio?: string;
   profileImage?: string;
+  expoToken?: string;
 }): Promise<any> => {
   try {
     const {
@@ -35,6 +36,7 @@ export const registerUser = async (data: {
       phone,
       bio = "",
       profileImage = "",
+      expoToken = "",
     } = data;
 
     const auth = getAuth(app);
@@ -54,6 +56,7 @@ export const registerUser = async (data: {
       email,
       phone,
       bio,
+      expoToken,
       profileImage,
       followerCount: 0,
       followingCount: 0,
@@ -78,9 +81,10 @@ export const registerUser = async (data: {
 export const loginUser = async (data: {
   email: string;
   password: string;
+  expoToken?: string;
 }): Promise<any> => {
   try {
-    const { email, password } = data;
+    const { email, password, expoToken } = data;
 
     const auth = getAuth(app);
 
@@ -93,6 +97,12 @@ export const loginUser = async (data: {
       email: userCredential.user.email,
       id: userCredential.user.uid,
     };
+
+    updateExpoToken({
+      userId: userCredential.user.uid,
+      expoToken,
+    });
+
     return user;
   } catch (error) {
     console.log("Registration error:", error);
@@ -133,6 +143,36 @@ export const getUserById = async (id: string) => {
   } catch (error) {
     console.error("Error fetching user:", error);
     errorMessage(error);
+  }
+};
+
+export const updateExpoToken = async (data: {
+  userId?: string;
+  expoToken?: string;
+}): Promise<void> => {
+  try {
+    const { userId, expoToken = "" } = data;
+
+    if (!userId) {
+      throw new Error("User ID is required.");
+    }
+
+    const userDocRef = doc(db, "users", userId);
+
+    const updateObject = {
+      expoToken,
+    };
+
+    await updateDoc(userDocRef, updateObject);
+  } catch (error) {
+    console.error("Error updating user:", error);
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: "Failed to update user",
+    });
+
+    throw error;
   }
 };
 

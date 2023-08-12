@@ -7,19 +7,16 @@ import { Common } from "../common";
 interface NotificationCardProps {
   title: string;
   description: string;
-  date: string;
 }
 
 const NotificationCard: React.FC<NotificationCardProps> = ({
   title,
   description,
-  date,
 }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
-      <Text style={styles.date}>{date}</Text>
     </View>
   );
 };

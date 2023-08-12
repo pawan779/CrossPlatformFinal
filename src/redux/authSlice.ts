@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   user: { id: "", postData: [] },
+  expoToken: "",
   otherUser: { id: "", postData: [] },
   isLoading: true,
 };
@@ -51,6 +52,10 @@ export const authSlice = createSlice({
       };
     },
 
+    addExpoTokenAction: (state, action) => {
+      state.expoToken = action.payload || initialState.expoToken;
+    },
+
     startLoadingAction: (state) => {
       state.isLoading = true;
     },
@@ -70,6 +75,7 @@ export const {
   updatePostAction,
   getOtherUserAction,
   deletePostAction,
+  addExpoTokenAction,
 } = authSlice.actions;
 
 export default authSlice.reducer;

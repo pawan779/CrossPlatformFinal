@@ -7,7 +7,7 @@ import Typography from "../../components/common/Typography";
 import { StatusBar } from "expo-status-bar";
 import CommonTextInput from "../../components/common/CustomInput";
 import * as authDb from "../../database/authDB";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUserAction } from "../../redux/authSlice";
 
 interface FormData {
@@ -34,7 +34,7 @@ const LoginScreen: React.FC = (props: any) => {
 
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const dispatch = useDispatch();
-
+  const expoToken = useSelector((state: any) => state?.authSlice?.expoToken);
   const handleChange = (key: keyof FormData, value: string) => {
     setFormData((prevData) => ({ ...prevData, [key]: value }));
     setErrorData((prevErrorData) => ({ ...prevErrorData, [key]: false }));
@@ -58,7 +58,7 @@ const LoginScreen: React.FC = (props: any) => {
 
   const handleLogin = async () => {
     try {
-      const user = await authDb.loginUser(formData);
+      const user = await authDb.loginUser({ ...formData, expoToken });
       dispatch(loginUserAction(user));
       props.navigation.navigate("Dashboard");
     } catch (error) {

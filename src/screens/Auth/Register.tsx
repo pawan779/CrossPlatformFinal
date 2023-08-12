@@ -8,7 +8,7 @@ import Header from "../../components/common/Header";
 import CommonTextInput from "../../components/common/CustomInput";
 import * as authDb from "../../database/authDB";
 import Toast from "react-native-toast-message";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { registerUserAction } from "../../redux/authSlice";
 
 export interface FormData {
@@ -50,6 +50,7 @@ const RegisterScreen: React.FC = (props: any) => {
 
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const dispatch = useDispatch();
+  const expoToken = useSelector((state: any) => state?.authSlice?.expoToken);
 
   const checkValidation = () => {
     const newErrorData = {} as ErrorData;
@@ -99,7 +100,7 @@ const RegisterScreen: React.FC = (props: any) => {
 
   const handleRegister = async () => {
     try {
-      const res = await authDb.registerUser(formData);
+      const res = await authDb.registerUser({ ...formData, expoToken });
       dispatch(registerUserAction(res));
       clearForm();
       props.navigation.navigate("Dashboard");

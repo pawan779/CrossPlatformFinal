@@ -6,6 +6,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Header from "../../../components/common/Header";
@@ -21,6 +22,8 @@ import {
   stopLoadingAction,
   updateUaserAction,
 } from "../../../redux/authSlice";
+import { getPostAction } from "../../../redux/postSlice";
+import * as postDb from "../../../database/postDB";
 
 interface FormData {
   firstName: string;
@@ -36,7 +39,7 @@ interface ErrorData {
   phone: boolean;
 }
 
-const UpdateProfile: React.FC = () => {
+const UpdateProfile: React.FC = (props) => {
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -99,6 +102,12 @@ const UpdateProfile: React.FC = () => {
     }
   };
 
+  const loadPost = async () => {
+    const posts = await postDb.getPost(user.id);
+    dispatch(getPostAction(posts));
+    props.navigation.navigate("Dashboard");
+  };
+
   const handleUpdateProfile = async () => {
     try {
       dispatch(startLoadingAction());
@@ -109,6 +118,7 @@ const UpdateProfile: React.FC = () => {
       });
 
       dispatch(updateUaserAction(res));
+      await loadPost();
       dispatch(stopLoadingAction());
     } catch (error) {
       console.log("error123", error);
@@ -140,7 +150,11 @@ const UpdateProfile: React.FC = () => {
   return (
     <View style={styles.container}>
       <Header title="Update Profile" />
-      <View style={styles.content}>
+      <ScrollView
+        style={styles.content}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.profileImageContainer}>
           <TouchableOpacity onPress={selectProfileImage}>
             <Image
@@ -189,7 +203,7 @@ const UpdateProfile: React.FC = () => {
           onChangeText={(text) => handleChange("bio", text)}
           multiline
         />
-      </View>
+      </ScrollView>
 
       <Button label="Save Changes" onPress={checkValidation} />
     </View>

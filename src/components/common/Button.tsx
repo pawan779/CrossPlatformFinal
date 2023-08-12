@@ -13,12 +13,14 @@ interface ButtonProps extends TouchableOpacityProps {
   variant?: "primary" | "secondary";
   label: string;
   size?: "small" | "large";
+  buttonColor?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   label,
   size = "large",
+  buttonColor = Common.Colors.black,
   ...props
 }) => {
   const buttonStyles =
@@ -31,8 +33,11 @@ const Button: React.FC<ButtonProps> = ({
   const buttonSize = size === "small" ? styles.smallButton : styles.button;
 
   return (
-    <View style={styles.buttonContainer}>
-      <TouchableOpacity style={[buttonSize, buttonStyles]} {...props}>
+    <View style={[styles.buttonContainer]}>
+      <TouchableOpacity
+        style={[buttonSize, buttonStyles, { backgroundColor: buttonColor }]}
+        {...props}
+      >
         <Text style={[styles.buttonText, textStyles]}>{label}</Text>
       </TouchableOpacity>
     </View>

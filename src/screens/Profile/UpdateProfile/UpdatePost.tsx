@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -6,19 +6,25 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import Header from "../../components/common/Header";
-import Button from "../../components/common/Button";
-import Typography from "../../components/common/Typography";
-import { Common } from "../../components/common";
+import Header from "../../../components/common/Header";
+import Button from "../../../components/common/Button";
+import Typography from "../../../components/common/Typography";
+import { Common } from "../../../components/common";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
-import * as postDb from "../../database/postDB";
+import * as postDb from "../../../database/postDB";
 import { useDispatch, useSelector } from "react-redux";
-import { getPostAction } from "../../redux/postSlice";
-import { startLoadingAction, stopLoadingAction } from "../../redux/authSlice";
+import { getPostAction } from "../../../redux/postSlice";
+import {
+  deletePostAction,
+  startLoadingAction,
+  stopLoadingAction,
+  updatePostAction,
+} from "../../../redux/authSlice";
 
-const AddPost: React.FC = () => {
+const UpdatePost: React.FC = (props: any) => {
   const [title, setTitle] = useState("");
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [image, setImage] = useState(null);
@@ -41,21 +47,15 @@ const AddPost: React.FC = () => {
 
   const removeImage = () => {
     setImageUri(null);
-  };
-
-  const clearPost = () => {
-    setTitle("");
-    setImageUri(null);
     setImage(null);
   };
 
   const loadPost = async () => {
     const posts = await postDb.getPost(userId);
     dispatch(getPostAction(posts));
-    console.log(posts);
   };
 
-  const handleAddPost = async () => {
+  const handleUpdatePost = async () => {
     if (!title && !image) {
       Toast.show({
         type: "error",
@@ -65,10 +65,24 @@ const AddPost: React.FC = () => {
     } else {
       try {
         dispatch(startLoadingAction());
-        await postDb.addPost({ title, image: imageUri, userId });
-        clearPost();
+        const res = await postDb.updatePost({
+          title,
+          image: imageUri,
+          profileImage: image,
+          postId: props?.route.params?.postData?.id,
+        });
+
+        console.log("response", res);
+        dispatch(updatePostAction(res));
+
         loadPost();
         dispatch(stopLoadingAction());
+        props?.navigation?.goBack();
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: "Post updated successfully",
+        });
       } catch (error) {
         console.log(error);
         dispatch(stopLoadingAction());
@@ -76,9 +90,49 @@ const AddPost: React.FC = () => {
     }
   };
 
+  const handleDeletePost = async () => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this post?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: async () => {
+            try {
+              const postId = props?.route.params?.postData?.id;
+              dispatch(startLoadingAction());
+              await postDb.deletePost(postId);
+              dispatch(deletePostAction(postId));
+              loadPost();
+              dispatch(stopLoadingAction());
+              props?.navigation?.goBack();
+              Toast.show({
+                type: "success",
+                text1: "Success",
+                text2: "Post deleted successfully",
+              });
+            } catch (error) {
+              console.log(error);
+              dispatch(stopLoadingAction());
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  useEffect(() => {
+    setTitle(props?.route.params?.postData?.title);
+    setImage(props?.route.params?.postData?.postImage);
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Header title="Add Post" />
+      <Header title="Update Post" />
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <Typography style={styles.label}>Title</Typography>
         <TextInput
@@ -90,7 +144,7 @@ const AddPost: React.FC = () => {
         />
 
         <Typography style={styles.label}>Image</Typography>
-        {imageUri && (
+        {image && (
           <>
             <Image source={{ uri: image }} style={styles.image} />
             <TouchableOpacity
@@ -113,7 +167,12 @@ const AddPost: React.FC = () => {
         </TouchableOpacity>
       </ScrollView>
 
-      <Button label="Add Post" onPress={handleAddPost} />
+      <Button
+        label="Delete Post"
+        onPress={handleDeletePost}
+        buttonColor={Common.Colors.error}
+      />
+      <Button label="Update" onPress={handleUpdatePost} />
     </View>
   );
 };
@@ -160,7 +219,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   selectImageButtonText: {
-    color: "#000",
+    color: Common.Colors.black,
     fontWeight: "bold",
   },
   removeImageButton: {
@@ -169,12 +228,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginVertical: 10,
-    backgroundColor: Common.Colors.error,
+    borderColor: Common.Colors.error,
+    borderWidth: 1,
   },
   removeImageButtonText: {
-    color: Common.Colors.white,
+    color: Common.Colors.error,
     fontWeight: "bold",
   },
 });
 
-export default AddPost;
+export default UpdatePost;

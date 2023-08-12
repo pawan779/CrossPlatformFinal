@@ -47,7 +47,8 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
 
   const handleShare = (post: CardDataProps) => {
     Share.share({
-      message: post?.title || "No title",
+      message: post?.postImage,
+      title: post?.title,
       url: post?.postImage,
     });
   };

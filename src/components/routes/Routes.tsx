@@ -8,6 +8,7 @@ import UpdateProfile from "../../screens/Profile/UpdateProfile";
 import RegisterScreen from "../../screens/Auth/Register";
 import { checkISUserLoggedIn } from "../../database/authDB/authData";
 import AppLoader from "../../screens/AppLoader";
+import UpdatePost from "../../screens/Profile/UpdateProfile/UpdatePost";
 
 const Stack = createStackNavigator();
 
@@ -29,6 +30,7 @@ const Routes: React.FC = () => {
       <Stack.Screen name="Dashboard" component={ButtonTab} />
       <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
       <Stack.Screen name="UpdateProfileScreen" component={UpdateProfile} />
+      <Stack.Screen name="UpdatPostScreen" component={UpdatePost} />
       {/* <Stack.Screen name="Home" component={Home} /> */}
     </Stack.Navigator>
   );

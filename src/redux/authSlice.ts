@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: { id: "" },
+  user: { id: "", postData: [] },
   isLoading: true,
 };
 
@@ -21,6 +21,32 @@ export const authSlice = createSlice({
     updateUaserAction: (state, action) => {
       state.user = { ...state.user, ...action.payload } || initialState.user;
     },
+    updatePostAction: (state, action) => {
+      const newPostData = [...state.user.postData];
+      const index = newPostData.findIndex(
+        (post) => post.id === action.payload.id
+      );
+
+      console.log("action.payload", action.payload);
+      newPostData[index] = action.payload;
+
+      state.user = {
+        ...state.user,
+        postData: newPostData,
+      };
+    },
+
+    deletePostAction: (state, action) => {
+      const newPostData = [...state.user.postData];
+      const index = newPostData.findIndex((post) => post.id === action.payload);
+      newPostData.splice(index, 1);
+
+      state.user = {
+        ...state.user,
+        postData: newPostData,
+      };
+    },
+
     startLoadingAction: (state) => {
       state.isLoading = true;
     },
@@ -37,6 +63,8 @@ export const {
   startLoadingAction,
   stopLoadingAction,
   updateUaserAction,
+  updatePostAction,
+  deletePostAction,
 } = authSlice.actions;
 
 export default authSlice.reducer;

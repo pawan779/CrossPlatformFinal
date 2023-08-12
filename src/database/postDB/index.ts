@@ -4,4 +4,6 @@ export {
   getPostById,
   getPostByUserId,
   updateLikePost,
+  updatePost,
+  deletePost,
 } from "./postDB";

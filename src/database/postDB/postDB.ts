@@ -10,6 +10,7 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
+  deleteDoc,
 } from "firebase/firestore"; // Import 'collection' and 'addDoc'
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import uploadImageToCloudinary from "../cloudinary";
@@ -173,6 +174,63 @@ export const updateLikePost = async (
   } catch (error) {
     console.error("Error liking post:", error);
     errorMessage(error);
+    throw error;
+  }
+};
+
+export const updatePost = async (data: {
+  title?: string;
+  image?: string;
+  profileImage?: string;
+  postId: string;
+}): Promise<any> => {
+  const { title, image, profileImage, postId } = data;
+
+  let imageRef;
+  const postDocRef = doc(db, "posts", postId);
+
+  try {
+    if (image) {
+      imageRef = await uploadImageToCloudinary(image);
+    }
+    const postDoc = await getDoc(postDocRef);
+    if (!postDoc.exists()) {
+      throw new Error("Post not found");
+    }
+
+    const updateObject: any = {
+      title,
+    };
+
+    if (image) {
+      updateObject.postImage = imageRef;
+    } else {
+      updateObject.postImage = profileImage;
+    }
+
+    await updateDoc(postDocRef, updateObject);
+
+    console.log("postDoc.data(),", postDoc.data());
+    return {
+      ...postDoc.data(),
+      title,
+      postImage: updateObject.postImage,
+      id: postId,
+    };
+  } catch (error) {
+    console.error("Error updating post:", error);
+    throw error;
+  }
+};
+
+export const deletePost = async (postId: string): Promise<void> => {
+  const postDocRef = doc(db, "posts", postId);
+
+  try {
+    await deleteDoc(postDocRef);
+    console.log("Post deleted successfully");
+  } catch (error) {
+    console.error("Error deleting post:", error);
     throw error;
   }
 };

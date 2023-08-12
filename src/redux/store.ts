@@ -1,26 +1,24 @@
 import { createStore, applyMiddleware, compose } from "redux";
 import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
-import logger from "redux-logger";
-import rootReducer from "./roootReducer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-declare global {
-  interface Window {
-    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
-  }
-}
+import logger from "redux-logger";
+import rootReducer from "./roootReducer";
 
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  whitelist: ["authSlice", "postSlice"],
-  // blacklist: ["dashboard"],
+  blacklist: [""],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+  ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+      // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
+    })
+  : compose;
+
 const middleware = [];
 const enhancers = [];
 

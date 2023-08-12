@@ -7,7 +7,11 @@ import PostCard from "./components/PostCard";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { getUserById } from "../../database/authDB";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserAction } from "../../redux/authSlice";
+import {
+  getUserAction,
+  startLoadingAction,
+  stopLoadingAction,
+} from "../../redux/authSlice";
 
 interface UpdateProfileProps {
   navigation: StackNavigationProp<any>;
@@ -57,12 +61,19 @@ const ProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
   //   ],
   // });
 
-  const { user } = useSelector((state: any) => state?.authSlice);
+  const { user, isLoading } = useSelector((state: any) => state?.authSlice);
   const dispatch = useDispatch();
 
   const getUser = async () => {
-    const data = await getUserById(user?.id);
-    dispatch(getUserAction(user));
+    try {
+      dispatch(startLoadingAction());
+      const data = await getUserById(user?.id);
+      dispatch(getUserAction(data));
+      dispatch(stopLoadingAction());
+    } catch (error) {
+      dispatch(stopLoadingAction());
+      console.log(error);
+    }
   };
 
   const renderButton = (userId: string) => {
@@ -90,34 +101,38 @@ const ProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Header title={"Profile"} />
-      <View style={styles.profileContainer}>
-        <Image
-          source={{ uri: user?.profileImage }}
-          style={styles.profileImage}
-        />
-        <Text style={styles.username}>
-          {user?.firstName + " " + user?.lastName}
-        </Text>
-        <View style={styles.statsContainer}>
-          <View style={styles.statsItem}>
-            <Text style={styles.statsText}>{user?.followerCount}</Text>
-            <Text style={styles.statsLabel}>Followers</Text>
-          </View>
-          <View style={styles.statsItem}>
-            <Text style={styles.statsText}>{user?.followingCount}</Text>
-            <Text style={styles.statsLabel}>Following</Text>
-          </View>
-          <View style={styles.statsItem}>
-            <Text style={styles.statsText}>{user?.postData?.length}</Text>
-            <Text style={styles.statsLabel}>Posts</Text>
-          </View>
-        </View>
+      {!isLoading && (
+        <>
+          <View style={styles.profileContainer}>
+            <Image
+              source={{ uri: user?.profileImage }}
+              style={styles.profileImage}
+            />
+            <Text style={styles.username}>
+              {user?.firstName + " " + user?.lastName}
+            </Text>
+            <View style={styles.statsContainer}>
+              <View style={styles.statsItem}>
+                <Text style={styles.statsText}>{user?.followerCount}</Text>
+                <Text style={styles.statsLabel}>Followers</Text>
+              </View>
+              <View style={styles.statsItem}>
+                <Text style={styles.statsText}>{user?.followingCount}</Text>
+                <Text style={styles.statsLabel}>Following</Text>
+              </View>
+              <View style={styles.statsItem}>
+                <Text style={styles.statsText}>{user?.postData?.length}</Text>
+                <Text style={styles.statsLabel}>Posts</Text>
+              </View>
+            </View>
 
-        {renderButton(user?.id)}
-        <Text style={styles.bio}>Bio: {user.bio}</Text>
-      </View>
+            {renderButton(user?.id)}
+            <Text style={styles.bio}>Bio: {user.bio}</Text>
+          </View>
 
-      <PostCard postData={user?.postData} />
+          <PostCard postData={user?.postData} />
+        </>
+      )}
     </View>
   );
 };

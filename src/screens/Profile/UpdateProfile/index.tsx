@@ -13,20 +13,21 @@ import Button from "../../../components/common/Button";
 import Typography from "../../../components/common/Typography";
 import { Common } from "../../../components/common";
 import CommonTextInput from "../../../components/common/CustomInput";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUser } from "../../../database/authDB";
+import { getUserAction, updateUaserAction } from "../../../redux/authSlice";
 
 interface FormData {
   firstName: string;
   lastName: string;
   email: string;
-  profileImageUri: string | null;
+  profileImage: string | null;
   bio: string;
   phone: string;
 }
 interface ErrorData {
   firstName: boolean;
   lastName: boolean;
-  bio: boolean;
   phone: boolean;
 }
 
@@ -35,7 +36,7 @@ const UpdateProfile: React.FC = () => {
     firstName: "",
     lastName: "",
     email: "user@example.com",
-    profileImageUri: "https://source.unsplash.com/random?user",
+    profileImage: "",
     bio: "",
     phone: "",
   });
@@ -45,9 +46,10 @@ const UpdateProfile: React.FC = () => {
   const [errorData, setErrorData] = useState<ErrorData>({
     firstName: false,
     lastName: false,
-    bio: false,
     phone: false,
   });
+  const [isSubmit, setIsSubmit] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   const selectProfileImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -60,7 +62,7 @@ const UpdateProfile: React.FC = () => {
     if (!result.canceled) {
       setFormData((prevUser) => ({
         ...prevUser,
-        profileImageUri: result.assets[0].uri,
+        profileImage: result.assets[0].uri,
       }));
       setBase64Image(result.assets[0].base64);
     }
@@ -73,17 +75,57 @@ const UpdateProfile: React.FC = () => {
 
   const { user } = useSelector((state: any) => state?.authSlice);
 
+  const checkValidation = () => {
+    const newErrorData = {} as ErrorData;
+    for (const key in formData) {
+      if (formData[key] === "") {
+        newErrorData[key] = true;
+      }
+    }
+
+    // Validate Phone Number
+    if (formData.phone.length !== 10) {
+      newErrorData.phone = true;
+    }
+
+    setErrorData(newErrorData);
+    if (Object.keys(newErrorData).length === 0) {
+      setIsSubmit(true);
+    }
+  };
+
+  const handleUpdateProfile = async () => {
+    try {
+      const res = await updateUser({
+        ...formData,
+        profileImage: base64Image,
+        userId: user?.id,
+      });
+
+      dispatch(updateUaserAction(res));
+    } catch (error) {
+      console.log("error123", error);
+    }
+  };
+
+  useEffect(() => {
+    if (isSubmit) {
+      handleUpdateProfile();
+      setIsSubmit(false);
+    }
+  }, [isSubmit]);
+
   useEffect(() => {
     if (user) {
-      setFormData((prevData) => ({
-        ...prevData,
+      setFormData({
+        ...formData,
         firstName: user?.firstName,
         lastName: user?.lastName,
         email: user?.email,
-        profileImageUri: user?.profileImage,
+        profileImage: user?.profileImage,
         bio: user?.bio,
         phone: user?.phone,
-      }));
+      });
     }
   }, []);
 
@@ -94,7 +136,7 @@ const UpdateProfile: React.FC = () => {
         <View style={styles.profileImageContainer}>
           <TouchableOpacity onPress={selectProfileImage}>
             <Image
-              source={{ uri: formData.profileImageUri }}
+              source={{ uri: formData?.profileImage }}
               style={styles.profileImage}
             />
           </TouchableOpacity>
@@ -103,9 +145,10 @@ const UpdateProfile: React.FC = () => {
         <Typography style={styles.label}>First Name</Typography>
         <CommonTextInput
           placeholder="First Name"
-          value={formData.firstName}
+          value={formData?.firstName}
           onChangeText={(text) => handleChange("firstName", text)}
           error={errorData.firstName}
+          errorMessage="First name is required"
         />
 
         <Typography style={styles.label}>Last Name</Typography>
@@ -113,7 +156,8 @@ const UpdateProfile: React.FC = () => {
           placeholder="Last Name"
           value={formData.lastName}
           onChangeText={(text) => handleChange("lastName", text)}
-          error={errorData.lastName}
+          error={errorData?.lastName}
+          errorMessage="Last name is required"
         />
 
         <Typography style={styles.label}>Phone Number</Typography>
@@ -121,29 +165,25 @@ const UpdateProfile: React.FC = () => {
           placeholder="Phone Number"
           value={formData.phone}
           onChangeText={(text) => handleChange("phone", text)}
-          error={errorData.phone}
+          error={errorData?.phone}
           keyboardType="phone-pad"
+          errorMessage="Phone number is required"
         />
 
         <Typography style={styles.label}>Email</Typography>
-        <Text style={styles.emailText}>{formData.email}</Text>
+        <Text style={styles.emailText}>{formData?.email}</Text>
 
         <Typography style={styles.label}>Bio</Typography>
         <TextInput
           style={styles.bioInput}
           placeholder="Tell us about yourself..."
-          value={formData.bio}
+          value={formData?.bio}
           onChangeText={(text) => handleChange("bio", text)}
           multiline
         />
       </View>
 
-      <Button
-        label="Save Changes"
-        onPress={() => {
-          /* Implement save changes functionality */
-        }}
-      />
+      <Button label="Save Changes" onPress={checkValidation} />
     </View>
   );
 };

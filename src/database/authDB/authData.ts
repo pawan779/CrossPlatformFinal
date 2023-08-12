@@ -5,10 +5,17 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { getPostByUserId } from "../postDB";
 import { errorMessage } from "../../components/common/ErrorMessage";
+import uploadImageToCloudinary from "../cloudinary";
 
 export const registerUser = async (data: {
   firstName: string;
@@ -126,5 +133,56 @@ export const getUserById = async (id: string) => {
   } catch (error) {
     console.error("Error fetching user:", error);
     errorMessage(error);
+  }
+};
+
+export const updateUser = async (data: {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  bio?: string;
+  profileImage?: string;
+  userId: string;
+}): Promise<any> => {
+  try {
+    const { firstName, lastName, phone, bio, profileImage, userId } = data;
+
+    console.log("profileImage", profileImage);
+
+    let profileImageRef;
+    if (profileImage) {
+      profileImageRef = await uploadImageToCloudinary(profileImage);
+    } else {
+      profileImageRef = "";
+    }
+
+    const userDocRef = doc(db, "users", userId);
+
+    await updateDoc(userDocRef, {
+      firstName,
+      lastName,
+      phone,
+      bio,
+      profileImage: profileImageRef,
+    });
+
+    Toast.show({
+      type: "success",
+      text1: "Success",
+      text2: "User updated successfully",
+    });
+
+    const data = {
+      firstName,
+      lastName,
+      phone,
+      bio,
+      profileImage: profileImageRef,
+    };
+    return data;
+  } catch (error) {
+    console.error("Error updating user:", error);
+    errorMessage(error);
+    throw error;
   }
 };

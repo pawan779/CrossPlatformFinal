@@ -4,7 +4,7 @@ import { View } from "react-native";
 import { useSelector } from "react-redux";
 
 const AppLoader: React.FC = ({ navigation }) => {
-  const { id } = useSelector((state) => state?.authSlice?.user);
+  const id = useSelector((state) => state?.authSlice?.user?.id);
 
   const isUserLoggedIn = () => {
     const isLoggedIn = checkISUserLoggedIn();

@@ -24,6 +24,7 @@ interface CardData {
 }
 interface CardDataProps {
   data: [CardData];
+  onRefresh: () => void;
 }
 
 const ImageSlider: React.FC<CardDataProps> = (props) => {
@@ -35,7 +36,11 @@ const ImageSlider: React.FC<CardDataProps> = (props) => {
   const renderCard = (cardData: CardData, index: number) => {
     return (
       <View style={styles.card} key={index.toString()}>
-        <ProfileCard data={cardData} />
+        <ProfileCard
+          data={cardData}
+          swipeLeft={swipeLeft}
+          onRefresh={props.onRefresh}
+        />
         {cardData?.postImage && (
           <>
             <Image source={{ uri: cardData?.postImage }} style={styles.image} />
@@ -62,12 +67,29 @@ const ImageSlider: React.FC<CardDataProps> = (props) => {
 
   const swipeLeft = () => {
     if (swiperRef.current) {
-      swiperRef.current.swipeLeft();
+      swiperRef.current.swipeBack();
       setCardIndex((prevIndex) => prevIndex - 1);
     }
   };
 
   console.log(cardIndex);
+
+  // useEffect(() => {
+  //   const handleBack = () => {
+  //     if (swiperRef.current && cardIndex > 0) {
+  //       swiperRef.current.swipeBack();
+  //       setCardIndex((prevIndex) => prevIndex - 1);
+  //       return true; // Prevent default back behavior
+  //     }
+  //     return false;
+  //   };
+
+  //   BackHandler.addEventListener("hardwareBackPress", handleBack);
+
+  //   return () => {
+  //     BackHandler.removeEventListener("hardwareBackPress", handleBack);
+  //   };
+  // }, [cardIndex]);
 
   return (
     <View style={styles.container}>

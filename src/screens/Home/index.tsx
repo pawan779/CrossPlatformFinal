@@ -26,14 +26,18 @@ const Home: React.FC = () => {
     }
   };
 
-  useEffect(() => {
+  const onRefresh = () => {
     loadPost();
+  };
+
+  useEffect(() => {
+    onRefresh;
   }, []);
 
   return (
     <View style={{ flex: 1 }}>
       {posts.length > 0 ? (
-        <ImageSlider data={posts} />
+        <ImageSlider data={posts} onRefresh={onRefresh} />
       ) : (
         <Typography variant="subheading" style={{ textAlign: "center" }}>
           No Post Found

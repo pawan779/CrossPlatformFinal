@@ -31,6 +31,8 @@ export interface CardDataProps {
 
 interface ProfileCardProps {
   data: CardDataProps;
+  swipeLeft: () => void;
+  onRefresh: () => void;
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = (props) => {
@@ -118,11 +120,19 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
             {props?.data?.likeCount}
           </Typography>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.iconButton} onPress={props.swipeLeft}>
+          <FontAwesome name={"arrow-left"} size={30} color={"#fff"} />
+        </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.iconButton}
           onPress={() => handleShare(props?.data)}
         >
           <FontAwesome name={"share-alt"} size={30} color={"#fff"} />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.iconButton} onPress={props.onRefresh}>
+          <FontAwesome name={"refresh"} size={30} color={"#fff"} />
         </TouchableOpacity>
       </View>
       <LongTextWithToggle initialText={props?.data?.title} />

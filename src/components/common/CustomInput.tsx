@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { TextInput, View, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  TextInput,
+  View,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Common } from "./";
 
@@ -8,6 +14,7 @@ interface CommonTextInputProps {
   value: string;
   onChangeText: (text: string) => void;
   error?: boolean;
+  errorMessage?: string; // New prop for error message
   secureTextEntry?: boolean;
   keyboardType?: "default" | "numeric" | "email-address" | "phone-pad";
 }
@@ -17,6 +24,7 @@ const CommonTextInput: React.FC<CommonTextInputProps> = ({
   value,
   onChangeText,
   error = false,
+  errorMessage = "",
   secureTextEntry = false,
   keyboardType = "default",
 }) => {
@@ -31,6 +39,7 @@ const CommonTextInput: React.FC<CommonTextInputProps> = ({
         value={value}
         secureTextEntry={secureTextEntry && !showPassword}
         keyboardType={keyboardType}
+        autoCapitalize="none"
       />
       {secureTextEntry && (
         <TouchableOpacity
@@ -43,6 +52,9 @@ const CommonTextInput: React.FC<CommonTextInputProps> = ({
             color={Common.Colors.black}
           />
         </TouchableOpacity>
+      )}
+      {error && errorMessage && (
+        <Text style={styles.errorText}>{errorMessage}</Text>
       )}
     </View>
   );
@@ -69,6 +81,11 @@ const styles = StyleSheet.create({
   },
   eyeIconContainer: {
     paddingHorizontal: 8,
+  },
+  errorText: {
+    color: Common.Colors.error,
+    fontSize: 12,
+    marginTop: 4,
   },
 });
 

@@ -1,10 +1,12 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
+    "strict": false,
+    "types": ["@firebase/auth-types"]
   },
   "baseUrl": "./",
     "paths": {
       "@assets/*": ["./assets/*"]
     }
 }
+

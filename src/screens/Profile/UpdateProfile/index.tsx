@@ -20,7 +20,7 @@ import {
   getUserAction,
   startLoadingAction,
   stopLoadingAction,
-  updateUaserAction,
+  updateUserAction,
 } from "../../../redux/authSlice";
 import { getPostAction } from "../../../redux/postSlice";
 import * as postDb from "../../../database/postDB";
@@ -117,7 +117,7 @@ const UpdateProfile: React.FC = (props: any) => {
         userId: user?.id,
       });
 
-      dispatch(updateUaserAction(res));
+      dispatch(updateUserAction(res));
       await loadPost();
       dispatch(stopLoadingAction());
     } catch (error) {

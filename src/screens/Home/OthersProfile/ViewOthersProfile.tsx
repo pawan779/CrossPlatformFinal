@@ -7,54 +7,43 @@ import {
   ScrollView,
   RefreshControl,
 } from "react-native";
-import Header from "../../components/common/Header";
-import { Common } from "../../components/common";
-import Button from "../../components/common/Button";
-import PostCard from "./components/PostCard";
+import Header from "../../../components/common/Header";
+import { Common } from "../../../components/common";
+import Button from "../../../components/common/Button";
+import PostCard from "../../Profile/components/PostCard";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { getUserById } from "../../database/authDB";
+import { getUserById } from "../../../database/authDB";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  getOtherUserAction,
   getUserAction,
   startLoadingAction,
   stopLoadingAction,
-} from "../../redux/authSlice";
+} from "../../../redux/authSlice";
 
 interface UpdateProfileProps {
   navigation: StackNavigationProp<any>;
+  route: any;
 }
 
-const ProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
-  const { user, isLoading } = useSelector((state: any) => state?.authSlice);
+const ViewOthersProfile: React.FC<UpdateProfileProps> = ({
+  navigation,
+  route,
+}) => {
+  const { isLoading } = useSelector((state: any) => state?.authSlice);
+  const { user } = route?.params;
+  console.log(user);
   const dispatch = useDispatch();
 
   const getUser = async () => {
     try {
       dispatch(startLoadingAction());
       const data = await getUserById(user?.id);
-      dispatch(getUserAction(data));
+      dispatch(getOtherUserAction(data));
       dispatch(stopLoadingAction());
     } catch (error) {
       dispatch(stopLoadingAction());
       console.log(error);
-    }
-  };
-
-  const renderButton = (userId: string) => {
-    if (user?.id === userId) {
-      return (
-        <Button
-          label="Update Profile"
-          onPress={() => navigation.navigate("UpdateProfileScreen")}
-        />
-      );
-    } else {
-      return (
-        <Button
-          label="Follow"
-          // onPress={() => navigation.navigate("UpdateProfileScreen")}
-        />
-      );
     }
   };
 
@@ -97,12 +86,15 @@ const ProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
                 <Text style={styles.statsLabel}>Posts</Text>
               </View>
             </View>
-
-            {renderButton(user?.id)}
+            <Button label="Follow" />
             <Text style={styles.bio}>Bio: {user.bio}</Text>
           </View>
 
-          <PostCard postData={user?.postData} />
+          <PostCard
+            postData={user?.postData}
+            user={user}
+            redirectFrom="ViewOtherProfile"
+          />
         </ScrollView>
       )}
     </View>
@@ -155,4 +147,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileScreen;
+export default ViewOthersProfile;

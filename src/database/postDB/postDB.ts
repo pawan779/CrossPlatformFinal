@@ -109,11 +109,13 @@ export const getPostByUserId = async (userId) => {
 
     for (const doc of querySnapshot.docs) {
       const postData = doc.data();
+      // const createdUser = await getUserById(userId);
       if (postData.userId === userId) {
         const post = {
           ...postData,
           isLikedbyMe: postData.likedBy.includes(userId),
           id: doc.id,
+          // user: createdUser,
         };
         userPosts.push(post);
       }

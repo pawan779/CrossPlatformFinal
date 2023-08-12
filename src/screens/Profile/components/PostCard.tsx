@@ -3,6 +3,7 @@ import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Typography from "../../../components/common/Typography";
 import { Common } from "../../../components/common";
 import { useNavigation } from "@react-navigation/native";
+import { CardDataProps } from "../../Home/components/ProfileCard";
 
 interface Post {
   id: number;
@@ -12,14 +13,21 @@ interface Post {
 
 interface PostCardProps {
   postData: Post[];
+  user: CardDataProps;
+  redirectFrom: string;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ postData }) => {
+const PostCard: React.FC<PostCardProps> = ({
+  postData,
+  user,
+  redirectFrom,
+}) => {
   const navigation: any = useNavigation();
 
   const handlePost = (item: Post) => {
-    console.log("Post");
-    navigation.navigate("UpdatPostScreen", { postData: item });
+    redirectFrom == "ViewOtherProfile"
+      ? navigation.navigate("OthersPostScreen", { postData: user })
+      : navigation.navigate("UpdatPostScreen", { postData: item });
   };
 
   return (

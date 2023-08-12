@@ -9,6 +9,8 @@ import RegisterScreen from "../../screens/Auth/Register";
 import { checkISUserLoggedIn } from "../../database/authDB/authData";
 import AppLoader from "../../screens/AppLoader";
 import UpdatePost from "../../screens/Profile/UpdateProfile/UpdatePost";
+import ViewOthersProfile from "../../screens/Home/OthersProfile/ViewOthersProfile";
+import OthersPost from "../../screens/Home/OthersProfile/Post/OthersPost";
 
 const Stack = createStackNavigator();
 
@@ -31,6 +33,11 @@ const Routes: React.FC = () => {
       <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
       <Stack.Screen name="UpdateProfileScreen" component={UpdateProfile} />
       <Stack.Screen name="UpdatPostScreen" component={UpdatePost} />
+      <Stack.Screen
+        name="ViewOthersProfileScreen"
+        component={ViewOthersProfile}
+      />
+      <Stack.Screen name="OthersPostScreen" component={OthersPost} />
       {/* <Stack.Screen name="Home" component={Home} /> */}
     </Stack.Navigator>
   );

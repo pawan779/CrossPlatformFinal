@@ -58,7 +58,11 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
       <View style={styles.iconContainer}>
         <TouchableOpacity
           style={styles.iconButton}
-          onPress={() => navigation.navigate("ProfileScreen")}
+          onPress={() =>
+            navigation.navigate("ViewOthersProfileScreen", {
+              user: props?.data?.user,
+            })
+          }
         >
           <Image
             source={{ uri: props?.data?.user?.profileImage }}

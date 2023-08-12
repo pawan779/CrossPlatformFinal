@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   user: { id: "", postData: [] },
+  otherUser: { id: "", postData: [] },
   isLoading: true,
 };
 
@@ -18,7 +19,10 @@ export const authSlice = createSlice({
     getUserAction: (state, action) => {
       state.user = action.payload || initialState.user;
     },
-    updateUaserAction: (state, action) => {
+    getOtherUserAction: (state, action) => {
+      state.otherUser = action.payload || initialState.otherUser;
+    },
+    updateUserAction: (state, action) => {
       state.user = { ...state.user, ...action.payload } || initialState.user;
     },
     updatePostAction: (state, action) => {
@@ -62,8 +66,9 @@ export const {
   getUserAction,
   startLoadingAction,
   stopLoadingAction,
-  updateUaserAction,
+  updateUserAction,
   updatePostAction,
+  getOtherUserAction,
   deletePostAction,
 } = authSlice.actions;
 

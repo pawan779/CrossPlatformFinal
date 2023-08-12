@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPost } from "../../database/postDB";
 import { getPostAction } from "../../redux/postSlice";
 import { startLoadingAction, stopLoadingAction } from "../../redux/authSlice";
+import Typography from "../../components/common/Typography";
 
 const Home: React.FC = () => {
   const dispatch = useDispatch();
@@ -31,7 +32,13 @@ const Home: React.FC = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <ImageSlider data={posts} />
+      {posts.length > 0 ? (
+        <ImageSlider data={posts} />
+      ) : (
+        <Typography variant="subheading" style={{ textAlign: "center" }}>
+          No Post Found
+        </Typography>
+      )}
     </View>
   );
 };

@@ -35,7 +35,7 @@ const ImageSlider: React.FC<CardDataProps> = (props) => {
 
   const renderCard = (cardData: CardData, index: number) => {
     return (
-      <View style={styles.card} key={index.toString()}>
+      <View style={styles.card} key={cardData.id.toString()}>
         <ProfileCard
           data={cardData}
           swipeLeft={swipeLeft}
@@ -74,30 +74,8 @@ const ImageSlider: React.FC<CardDataProps> = (props) => {
 
   console.log(cardIndex);
 
-  // useEffect(() => {
-  //   const handleBack = () => {
-  //     if (swiperRef.current && cardIndex > 0) {
-  //       swiperRef.current.swipeBack();
-  //       setCardIndex((prevIndex) => prevIndex - 1);
-  //       return true; // Prevent default back behavior
-  //     }
-  //     return false;
-  //   };
-
-  //   BackHandler.addEventListener("hardwareBackPress", handleBack);
-
-  //   return () => {
-  //     BackHandler.removeEventListener("hardwareBackPress", handleBack);
-  //   };
-  // }, [cardIndex]);
-
   return (
     <View style={styles.container}>
-      {/* <ScrollView
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-        style={{ flex: 1 }}
-      > */}
       <Swiper
         ref={swiperRef}
         onSwiped={(index: number) => setCardIndex(index)}
@@ -113,7 +91,6 @@ const ImageSlider: React.FC<CardDataProps> = (props) => {
         infinite
         containerStyle={{ flex: 1, width: "100%", height: "100%" }}
       />
-      {/* </ScrollView> */}
     </View>
   );
 };

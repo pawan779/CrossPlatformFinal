@@ -6,19 +6,27 @@ import {
   StyleSheet,
   ScrollView,
   RefreshControl,
+  TouchableOpacity,
+  Alert,
 } from "react-native";
 import Header from "../../components/common/Header";
 import { Common } from "../../components/common";
 import Button from "../../components/common/Button";
 import PostCard from "./components/PostCard";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { getUserById } from "../../database/authDB";
+import { getUserById, logoutUser } from "../../database/authDB";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getUserAction,
   startLoadingAction,
   stopLoadingAction,
 } from "../../redux/authSlice";
+
+import Constant from "expo-constants";
+import { Ionicons } from "@expo/vector-icons";
+import Typography from "../../components/common/Typography";
+import { StatusBar } from "expo-status-bar";
+import { CommonActions } from "@react-navigation/native";
 
 interface UpdateProfileProps {
   navigation: StackNavigationProp<any>;
@@ -58,6 +66,30 @@ const ProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
     }
   };
 
+  const handleLogout = () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to log out?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Logout",
+          style: "destructive",
+          onPress: async () => {
+            await logoutUser();
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: "LoginScreen" }],
+              })
+            );
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   const onRefresh = () => {
     getUser();
   };
@@ -68,7 +100,16 @@ const ProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Header title={"Profile"} />
+      {/* <Header title={"Profile"} /> */}
+      <StatusBar style="auto" />
+      <View style={styles.logoutContainer}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Ionicons name="exit-outline" size={24} color={Common.Colors.error} />
+          <Typography variant="body" style={styles.logoutTxtSty}>
+            Logout
+          </Typography>
+        </TouchableOpacity>
+      </View>
       {!isLoading && (
         <ScrollView
           refreshControl={
@@ -110,9 +151,15 @@ const ProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  logoutTxtSty: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: Common.Colors.error,
+  },
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    paddingTop: Constant.statusBarHeight,
   },
   profileContainer: {
     justifyContent: "center",
@@ -152,6 +199,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     paddingHorizontal: 20,
+  },
+  logoutContainer: {
+    position: "absolute",
+    top: Constant.statusBarHeight + 10,
+    right: 10,
+    zIndex: 2,
+  },
+  logoutButton: {
+    paddingRight: 10,
+    alignItems: "center",
   },
 });
 

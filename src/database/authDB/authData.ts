@@ -4,6 +4,7 @@ import {
   getAuth,
   signInWithEmailAndPassword,
   onAuthStateChanged,
+  signOut,
 } from "firebase/auth";
 import {
   getFirestore,
@@ -73,7 +74,11 @@ export const registerUser = async (data: {
     };
   } catch (error) {
     console.log("Registration error:", error);
-    errorMessage(error);
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: error,
+    });
     throw error;
   }
 };
@@ -106,7 +111,12 @@ export const loginUser = async (data: {
     return user;
   } catch (error) {
     console.log("Registration error:", error);
-    errorMessage(error);
+
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: error,
+    });
     throw error;
   }
 };
@@ -142,7 +152,11 @@ export const getUserById = async (id: string) => {
     }
   } catch (error) {
     console.error("Error fetching user:", error);
-    errorMessage(error);
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: error,
+    });
   }
 };
 
@@ -225,7 +239,26 @@ export const updateUser = async (data: {
     return payload;
   } catch (error) {
     console.error("Error updating user:", error);
-    errorMessage(error);
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: error,
+    });
+    throw error;
+  }
+};
+
+export const logoutUser = async (): Promise<void> => {
+  try {
+    const auth = getAuth();
+    await signOut(auth);
+    Toast.show({
+      type: "success",
+      text1: "Success",
+      text2: "Logged out successfully",
+    });
+  } catch (error) {
+    console.error("Error logging out:", error);
     throw error;
   }
 };

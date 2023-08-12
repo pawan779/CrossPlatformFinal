@@ -31,7 +31,7 @@ const Home: React.FC = () => {
   };
 
   useEffect(() => {
-    onRefresh;
+    onRefresh();
   }, []);
 
   return (

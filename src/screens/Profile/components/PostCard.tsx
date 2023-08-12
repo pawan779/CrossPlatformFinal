@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  View,
-  Image,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-} from "react-native";
+import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Typography from "../../../components/common/Typography";
 import { Common } from "../../../components/common";
 import { useNavigation } from "@react-navigation/native";
@@ -23,39 +17,35 @@ interface PostCardProps {
 const PostCard: React.FC<PostCardProps> = ({ postData }) => {
   const navigation = useNavigation();
 
-  const handlePost = (item) => {
+  const handlePost = (item: Post) => {
     console.log("Post");
     navigation.navigate("UpdatPostScreen", { postData: item });
   };
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={postData}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={3}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={{ flex: 1 }}
-            onPress={() => handlePost(item)}
-          >
-            {item?.postImage ? (
-              <Image source={{ uri: item?.postImage }} style={styles.image} />
-            ) : (
-              <View style={styles.image}>
-                <Typography
-                  variant="body"
-                  numberOfLine={2}
-                  ellipsizeMode="tail"
-                  style={{ fontSize: 12 }}
-                >
-                  {item.title}{" "}
-                </Typography>
-              </View>
-            )}
-          </TouchableOpacity>
-        )}
-      />
+      {postData?.map((item, index) => (
+        <TouchableOpacity
+          key={item.id}
+          style={styles.touchable}
+          onPress={() => handlePost(item)}
+        >
+          {item?.postImage ? (
+            <Image source={{ uri: item?.postImage }} style={styles.image} />
+          ) : (
+            <View style={styles.image}>
+              <Typography
+                variant="body"
+                numberOfLines={2}
+                ellipsizeMode="tail"
+                style={{ fontSize: 12 }}
+              >
+                {item.title}
+              </Typography>
+            </View>
+          )}
+        </TouchableOpacity>
+      ))}
     </View>
   );
 };
@@ -64,6 +54,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 10,
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  touchable: {
+    width: "33.3%",
+    padding: 5,
   },
   image: {
     aspectRatio: 1,

@@ -1,5 +1,12 @@
-import React, { useEffect } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import Header from "../../components/common/Header";
 import { Common } from "../../components/common";
 import Button from "../../components/common/Button";
@@ -18,49 +25,6 @@ interface UpdateProfileProps {
 }
 
 const ProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
-  // const [user, setUser] = React.useState({
-  //   firstName: "Pawan",
-  //   lastName: "Dharel",
-  //   email: "pawan.dharel777@gmail.com",
-  //   image: "https://source.unsplash.com/random?user",
-  //   bio: " Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-  //   followers: 100,
-  //   following: 100,
-  //   posts: 100,
-  //   postData: [
-  //     {
-  //       id: 1,
-  //       image: "https://source.unsplash.com/random?",
-  //       caption: "Your post caption goes here.",
-  //       likes: 100,
-  //     },
-  //     {
-  //       id: 2,
-  //       image: "https://source.unsplash.com/random?",
-  //       caption: "Your post caption goes here.",
-  //       likes: 100,
-  //     },
-  //     {
-  //       id: 3,
-  //       image: "https://source.unsplash.com/random?",
-  //       caption: "Your post caption goes here.",
-  //       likes: 100,
-  //     },
-  //     {
-  //       id: 4,
-  //       image: "https://source.unsplash.com/random?",
-  //       caption: "Your post caption goes here.",
-  //       likes: 100,
-  //     },
-  //     {
-  //       id: 5,
-  //       image: "https://source.unsplash.com/random?",
-  //       caption: "Your post caption goes here.",
-  //       likes: 100,
-  //     },
-  //   ],
-  // });
-
   const { user, isLoading } = useSelector((state: any) => state?.authSlice);
   const dispatch = useDispatch();
 
@@ -94,6 +58,10 @@ const ProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
     }
   };
 
+  const onRefresh = () => {
+    getUser();
+  };
+
   useEffect(() => {
     getUser();
   }, []);
@@ -102,7 +70,7 @@ const ProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
     <View style={styles.container}>
       <Header title={"Profile"} />
       {!isLoading && (
-        <>
+        <ScrollView refreshControl={<RefreshControl onRefresh={onRefresh} />}>
           <View style={styles.profileContainer}>
             <Image
               source={{ uri: user?.profileImage }}
@@ -131,7 +99,7 @@ const ProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
           </View>
 
           <PostCard postData={user?.postData} />
-        </>
+        </ScrollView>
       )}
     </View>
   );

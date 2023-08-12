@@ -12,26 +12,51 @@ import Header from "../../components/common/Header";
 import Button from "../../components/common/Button";
 import Typography from "../../components/common/Typography";
 import { Common } from "../../components/common";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
+import * as postDb from "../../database/postDB";
+import { useSelector } from "react-redux";
 
 const AddPost: React.FC = () => {
   const [title, setTitle] = useState("");
   const [imageUri, setImageUri] = useState<string | null>(null);
+  const [image, setImage] = useState(null);
+  const userId = useSelector((state: any) => state?.authSlice?.user?.id);
 
   const selectImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
+      quality: 0.5,
+      base64: true,
     });
 
     if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
+      setImageUri(result.assets[0].base64);
+      setImage(result.assets[0].uri);
     }
   };
 
   const removeImage = () => {
     setImageUri(null);
+  };
+
+  const clearPost = () => {
+    setTitle("");
+    setImageUri(null);
+    setImage(null);
+  };
+
+  const handleAddPost = async () => {
+    if (!title && !image) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Post title or image is missing",
+      });
+    } else {
+      await postDb.addPost({ title, image: imageUri, userId });
+      clearPost();
+    }
   };
 
   return (
@@ -50,7 +75,7 @@ const AddPost: React.FC = () => {
         <Typography style={styles.label}>Image</Typography>
         {imageUri && (
           <>
-            <Image source={{ uri: imageUri }} style={styles.image} />
+            <Image source={{ uri: image }} style={styles.image} />
             <TouchableOpacity
               style={styles.removeImageButton}
               onPress={removeImage}
@@ -71,7 +96,7 @@ const AddPost: React.FC = () => {
         </TouchableOpacity>
       </ScrollView>
 
-      <Button label="Add Post" onPress={() => {}} />
+      <Button label="Add Post" onPress={handleAddPost} />
     </View>
   );
 };

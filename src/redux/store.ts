@@ -1,18 +1,32 @@
-import { configureStore } from "@reduxjs/toolkit";
-import postSlice from "./postSlice";
+import { createStore, applyMiddleware, compose } from "redux";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import logger from "redux-logger";
+import rootReducer from "./roootReducer";
 
-const storeEnhancers: any[] = [];
-if (process.env.NODE_ENV === "development" && !global.HermesInternal) {
-  // Add Redux DevTools extension enhancer only in development mode and not in Hermes
-  storeEnhancers.push(
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-  );
+declare global {
+  interface Window {
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
+  }
 }
 
-export const store = configureStore({
-  reducer: {
-    post: postSlice,
-  },
-  enhancers: storeEnhancers, // Use the conditionally created enhancers array
-  /* preloadedState, */
-});
+const persistConfig = {
+  key: "root",
+  storage,
+  // whitelist: ["dashboard"],
+  // blacklist: ["dashboard"],
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const middleware = [];
+const enhancers = [];
+
+middleware.push(logger);
+enhancers.push(applyMiddleware(...middleware));
+
+const store = createStore(persistedReducer, composeEnhancers(...enhancers));
+const persistor = persistStore(store);
+
+export { store, persistor };

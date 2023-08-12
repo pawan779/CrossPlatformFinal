@@ -7,6 +7,9 @@ import { StatusBar } from "expo-status-bar";
 import Header from "../../components/common/Header";
 import CommonTextInput from "../../components/common/CustomInput";
 import * as authDb from "../../database/authDB";
+import Toast from "react-native-toast-message";
+import { useDispatch } from "react-redux";
+import { registerUserAction } from "../../redux/authSlice";
 
 interface FormData {
   firstName: string;
@@ -46,6 +49,7 @@ const RegisterScreen: React.FC = ({ navigation }) => {
   });
 
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   const checkValidation = () => {
     const newErrorData = {} as ErrorData;
@@ -82,12 +86,25 @@ const RegisterScreen: React.FC = ({ navigation }) => {
     }
   };
 
+  const clearForm = () => {
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+    });
+  };
+
   const handleRegister = async () => {
     try {
       const res = await authDb.registerUser(formData);
-      console.log("res", res);
+      dispatch(registerUserAction(res));
+      clearForm();
+      navigation.navigate("Dashboard");
     } catch (error) {
-      console.log(error);
+      console.log("error123", error);
     }
   };
 
@@ -99,6 +116,7 @@ const RegisterScreen: React.FC = ({ navigation }) => {
   useEffect(() => {
     if (isSubmit) {
       handleRegister();
+      setIsSubmit(false);
     }
   }, [isSubmit]);
 

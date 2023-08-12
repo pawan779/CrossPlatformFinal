@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Common } from "../../components/common";
@@ -6,6 +6,7 @@ import Button from "../../components/common/Button";
 import Typography from "../../components/common/Typography";
 import { StatusBar } from "expo-status-bar";
 import CommonTextInput from "../../components/common/CustomInput";
+import * as authDb from "../../database/authDB";
 
 interface FormData {
   email: string;
@@ -29,27 +30,44 @@ const LoginScreen: React.FC = ({ navigation }) => {
     password: false,
   });
 
+  const [isSubmit, setIsSubmit] = useState<boolean>(false);
+
   const handleChange = (key: keyof FormData, value: string) => {
     setFormData((prevData) => ({ ...prevData, [key]: value }));
     setErrorData((prevErrorData) => ({ ...prevErrorData, [key]: false }));
   };
 
-  const handleLogin = () => {
+  const checkValidation = () => {
     // Implement your login logic here
     if (formData.email === "" || formData.password === "") {
-      console.log("Please fill in both email and password fields");
       setErrorData({
-        email: formData.email === "",
-        password: formData.password === "",
+        email: true,
+        password: true,
       });
     } else {
       setErrorData({
         email: false,
         password: false,
       });
-      navigation.navigate("Dashboard");
+      setIsSubmit(true);
     }
   };
+
+  const handleLogin = async () => {
+    try {
+      const user = await authDb.loginUser(formData);
+      navigation.navigate("Dashboard");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (isSubmit) {
+      handleLogin();
+      setIsSubmit(false);
+    }
+  }, [isSubmit]);
 
   return (
     <View style={styles.container}>
@@ -62,6 +80,7 @@ const LoginScreen: React.FC = ({ navigation }) => {
           onChangeText={(text) => handleChange("email", text)}
           error={errorData.email}
           keyboardType="email-address"
+          errorMessage="Please enter a valid email address"
         />
 
         <CommonTextInput
@@ -70,11 +89,12 @@ const LoginScreen: React.FC = ({ navigation }) => {
           onChangeText={(text) => handleChange("password", text)}
           error={errorData.password}
           secureTextEntry={true}
+          errorMessage="Please enter a valid password"
         />
         <Button
           label="Login"
           style={styles.loginButton}
-          onPress={handleLogin}
+          onPress={checkValidation}
         />
       </View>
       <View style={styles.bottomTxtStyle}>

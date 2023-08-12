@@ -1,6 +1,12 @@
 import { app, db } from "../config";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 export const registerUser = async (data: {
   firstName: string;
@@ -10,7 +16,7 @@ export const registerUser = async (data: {
   phone: string;
   bio?: string;
   profileImage?: string;
-}): Promise<void> => {
+}): Promise<any> => {
   try {
     const {
       firstName,
@@ -33,7 +39,7 @@ export const registerUser = async (data: {
 
     const db = getFirestore(app);
     const usersCollection = doc(db, "users", user.uid);
-    await setDoc(usersCollection, {
+    const res = await setDoc(usersCollection, {
       firstName,
       lastName,
       email,
@@ -42,9 +48,67 @@ export const registerUser = async (data: {
       profileImage,
     });
 
-    console.log("User registered:", user);
+    return {
+      firstName,
+      lastName,
+      email,
+      phone,
+      bio,
+      profileImage,
+      id: user.uid,
+    };
   } catch (error) {
-    console.error("Registration error:", error);
+    console.log("Registration error:", error);
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: error.message,
+    });
     throw error;
   }
+};
+
+export const loginUser = async (data: {
+  email: string;
+  password: string;
+}): Promise<any> => {
+  try {
+    const { email, password } = data;
+
+    const auth = getAuth(app);
+
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = userCredential.user;
+    console.log("user", user);
+  } catch (error) {
+    console.log("Registration error:", error);
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: error.message,
+    });
+    throw error;
+  }
+};
+
+export const checkISUserLoggedIn = async () => {
+  const auth = getAuth();
+  let isLoggedIn: Boolean;
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is logged in
+      console.log("User is logged in", user.uid);
+      isLoggedIn = true;
+    } else {
+      // User is not logged in
+      isLoggedIn = false;
+      console.log("User is not logged in");
+    }
+  });
+  return isLoggedIn;
 };

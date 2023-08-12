@@ -41,6 +41,9 @@ const CommonTextInput: React.FC<CommonTextInputProps> = ({
         keyboardType={keyboardType}
         autoCapitalize="none"
       />
+      {error && errorMessage && (
+        <Text style={styles.errorText}>{errorMessage}</Text>
+      )}
       {secureTextEntry && (
         <TouchableOpacity
           onPress={() => setShowPassword(!showPassword)}
@@ -52,9 +55,6 @@ const CommonTextInput: React.FC<CommonTextInputProps> = ({
             color={Common.Colors.black}
           />
         </TouchableOpacity>
-      )}
-      {error && errorMessage && (
-        <Text style={styles.errorText}>{errorMessage}</Text>
       )}
     </View>
   );

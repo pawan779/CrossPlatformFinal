@@ -39,7 +39,7 @@ interface ErrorData {
   phone: boolean;
 }
 
-const UpdateProfile: React.FC = (props) => {
+const UpdateProfile: React.FC = (props: any) => {
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",

@@ -15,7 +15,7 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ postData }) => {
-  const navigation = useNavigation();
+  const navigation: any = useNavigation();
 
   const handlePost = (item: Post) => {
     console.log("Post");

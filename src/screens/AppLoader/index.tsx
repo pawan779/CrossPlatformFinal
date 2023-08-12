@@ -3,14 +3,14 @@ import { checkISUserLoggedIn } from "../../database/authDB/authData";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
 
-const AppLoader: React.FC = ({ navigation }) => {
+const AppLoader: React.FC = (props: any) => {
   const id = useSelector((state) => state?.authSlice?.user?.id);
 
   const isUserLoggedIn = () => {
     const isLoggedIn = checkISUserLoggedIn();
     isLoggedIn && id
-      ? navigation.navigate("Dashboard")
-      : navigation.navigate("LoginScreen");
+      ? props.navigation.navigate("Dashboard")
+      : props.navigation.navigate("LoginScreen");
   };
   useEffect(() => {
     isUserLoggedIn();

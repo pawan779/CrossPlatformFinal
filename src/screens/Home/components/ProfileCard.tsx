@@ -43,7 +43,7 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
     }
   };
 
-  const navigation = useNavigation();
+  const navigation: any = useNavigation();
 
   const handleShare = (post: CardDataProps) => {
     Share.share({

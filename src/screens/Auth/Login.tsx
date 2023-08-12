@@ -20,7 +20,7 @@ interface ErrorData {
   password: boolean;
 }
 
-const LoginScreen: React.FC = ({ navigation }) => {
+const LoginScreen: React.FC = (props: any) => {
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -60,7 +60,7 @@ const LoginScreen: React.FC = ({ navigation }) => {
     try {
       const user = await authDb.loginUser(formData);
       dispatch(loginUserAction(user));
-      navigation.navigate("Dashboard");
+      props.navigation.navigate("Dashboard");
     } catch (error) {
       console.log(error);
     }
@@ -103,7 +103,9 @@ const LoginScreen: React.FC = ({ navigation }) => {
       </View>
       <View style={styles.bottomTxtStyle}>
         <Typography variant="body">Don't have an account? </Typography>
-        <TouchableOpacity onPress={() => navigation.navigate("RegisterScreen")}>
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate("RegisterScreen")}
+        >
           <Typography variant="body" style={{ color: Common.Colors.black }}>
             Sign up
           </Typography>

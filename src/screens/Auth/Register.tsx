@@ -29,7 +29,7 @@ interface ErrorData {
   confirmPassword: boolean;
 }
 
-const RegisterScreen: React.FC = ({ navigation }) => {
+const RegisterScreen: React.FC = (props: any) => {
   const [formData, setFormData] = useState<FormData>({
     firstName: "Pawan",
     lastName: "Dharel",
@@ -102,7 +102,7 @@ const RegisterScreen: React.FC = ({ navigation }) => {
       const res = await authDb.registerUser(formData);
       dispatch(registerUserAction(res));
       clearForm();
-      navigation.navigate("Dashboard");
+      props.navigation.navigate("Dashboard");
     } catch (error) {
       console.log("error123", error);
     }
@@ -185,7 +185,9 @@ const RegisterScreen: React.FC = ({ navigation }) => {
       </View>
       <View style={styles.bottomTxtStyle}>
         <Typography variant="body">Already have an account? </Typography>
-        <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate("LoginScreen")}
+        >
           <Typography variant="body" style={{ color: Common.Colors.black }}>
             Login
           </Typography>

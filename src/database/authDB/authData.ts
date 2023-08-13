@@ -115,7 +115,7 @@ export const loginUser = async (data: {
     Toast.show({
       type: "error",
       text1: "Error",
-      text2: error,
+      text2: error?.message || error,
     });
     throw error;
   }

@@ -60,7 +60,7 @@ export const getPost = async (userId: string) => {
   try {
     const querySnapshot = await getDocs(dbCollection);
 
-    for (const doc of querySnapshot.docs) {
+    for (const doc of querySnapshot.docs.reverse()) {
       const createdUser = await getUserById(doc.data()?.userId);
 
       const post = {

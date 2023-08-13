@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { Common } from "../../components/common";
 import Button from "../../components/common/Button";
 import Typography from "../../components/common/Typography";
@@ -31,12 +31,12 @@ interface ErrorData {
 
 const RegisterScreen: React.FC = (props: any) => {
   const [formData, setFormData] = useState<FormData>({
-    firstName: "Pawan",
-    lastName: "Dharel",
-    email: "pawan@gmail.com",
-    phone: "5197028049",
-    password: "12345678",
-    confirmPassword: "12345678",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [errorData, setErrorData] = useState<ErrorData>({
@@ -125,75 +125,81 @@ const RegisterScreen: React.FC = (props: any) => {
     <View style={styles.container}>
       <StatusBar style="auto" />
       <Header title="Register" />
-      <View style={styles.container1}>
-        <CommonTextInput
-          placeholder="First Name"
-          value={formData.firstName}
-          onChangeText={(text) => handleChange("firstName", text)}
-          error={errorData.firstName}
-          errorMessage="First name is required"
-        />
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.container1}>
+          <CommonTextInput
+            placeholder="First Name"
+            value={formData.firstName}
+            onChangeText={(text) => handleChange("firstName", text)}
+            error={errorData.firstName}
+            errorMessage="First name is required"
+          />
 
-        <CommonTextInput
-          placeholder="Last Name"
-          value={formData.lastName}
-          onChangeText={(text) => handleChange("lastName", text)}
-          error={errorData.lastName}
-          errorMessage="Last name is required"
-        />
+          <CommonTextInput
+            placeholder="Last Name"
+            value={formData.lastName}
+            onChangeText={(text) => handleChange("lastName", text)}
+            error={errorData.lastName}
+            errorMessage="Last name is required"
+          />
 
-        <CommonTextInput
-          placeholder="Phone Number"
-          value={formData.phone}
-          onChangeText={(text) => handleChange("phone", text)}
-          error={errorData.phone}
-          keyboardType="phone-pad"
-          errorMessage="Phone number should be 10 digits"
-        />
+          <CommonTextInput
+            placeholder="Phone Number"
+            value={formData.phone}
+            onChangeText={(text) => handleChange("phone", text)}
+            error={errorData.phone}
+            keyboardType="phone-pad"
+            errorMessage="Phone number should be 10 digits"
+          />
 
-        <CommonTextInput
-          placeholder="Email"
-          value={formData.email}
-          onChangeText={(text) => handleChange("email", text)}
-          error={errorData.email}
-          keyboardType="email-address"
-          errorMessage="Email is not valid"
-        />
+          <CommonTextInput
+            placeholder="Email"
+            value={formData.email}
+            onChangeText={(text) => handleChange("email", text)}
+            error={errorData.email}
+            keyboardType="email-address"
+            errorMessage="Email is not valid"
+          />
 
-        <CommonTextInput
-          placeholder="Password"
-          value={formData.password}
-          onChangeText={(text) => handleChange("password", text)}
-          error={errorData.password}
-          secureTextEntry={true}
-          errorMessage="Password should be at least 8 characters"
-        />
+          <CommonTextInput
+            placeholder="Password"
+            value={formData.password}
+            onChangeText={(text) => handleChange("password", text)}
+            error={errorData.password}
+            secureTextEntry={true}
+            errorMessage="Password should be at least 8 characters"
+          />
 
-        <CommonTextInput
-          placeholder="Confirm Password"
-          value={formData.confirmPassword}
-          onChangeText={(text) => handleChange("confirmPassword", text)}
-          error={errorData.confirmPassword}
-          secureTextEntry={true}
-          errorMessage="Password does not match"
-        />
+          <CommonTextInput
+            placeholder="Confirm Password"
+            value={formData.confirmPassword}
+            onChangeText={(text) => handleChange("confirmPassword", text)}
+            error={errorData.confirmPassword}
+            secureTextEntry={true}
+            errorMessage="Password does not match"
+          />
 
-        <Button
-          label="Register"
-          style={styles.registerButton}
-          onPress={checkValidation}
-        />
-      </View>
-      <View style={styles.bottomTxtStyle}>
-        <Typography variant="body">Already have an account? </Typography>
-        <TouchableOpacity
-          onPress={() => props.navigation.navigate("LoginScreen")}
-        >
-          <Typography variant="body" style={{ color: Common.Colors.black }}>
-            Login
-          </Typography>
-        </TouchableOpacity>
-      </View>
+          <Button
+            label="Register"
+            style={styles.registerButton}
+            onPress={checkValidation}
+          />
+        </View>
+        <View style={styles.bottomTxtStyle}>
+          <Typography variant="body">Already have an account? </Typography>
+          <TouchableOpacity
+            onPress={() => props.navigation.navigate("LoginScreen")}
+          >
+            <Typography variant="body" style={{ color: Common.Colors.black }}>
+              Login
+            </Typography>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </View>
   );
 };

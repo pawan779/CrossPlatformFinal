@@ -12,7 +12,7 @@ import { Common } from "../../../components/common";
 import Button from "../../../components/common/Button";
 import PostCard from "../../Profile/components/PostCard";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { getUserById } from "../../../database/authDB";
+import { followUser, getUserById } from "../../../database/authDB";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getOtherUserAction,
@@ -31,6 +31,7 @@ const ViewOthersProfile: React.FC<UpdateProfileProps> = ({
   route,
 }) => {
   const { isLoading } = useSelector((state: any) => state?.authSlice);
+  const id = useSelector((state: any) => state?.authSlice?.user?.id);
   const { user } = route?.params;
   console.log(user);
   const dispatch = useDispatch();
@@ -60,6 +61,7 @@ const ViewOthersProfile: React.FC<UpdateProfileProps> = ({
       <Header title={"Profile"} />
       {!isLoading && (
         <ScrollView
+          showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl refreshing={false} onRefresh={onRefresh} />
           }
@@ -74,19 +76,11 @@ const ViewOthersProfile: React.FC<UpdateProfileProps> = ({
             </Text>
             <View style={styles.statsContainer}>
               <View style={styles.statsItem}>
-                <Text style={styles.statsText}>{user?.followerCount}</Text>
-                <Text style={styles.statsLabel}>Followers</Text>
-              </View>
-              <View style={styles.statsItem}>
-                <Text style={styles.statsText}>{user?.followingCount}</Text>
-                <Text style={styles.statsLabel}>Following</Text>
-              </View>
-              <View style={styles.statsItem}>
                 <Text style={styles.statsText}>{user?.postData?.length}</Text>
                 <Text style={styles.statsLabel}>Posts</Text>
               </View>
             </View>
-            <Button label="Follow" />
+
             <Text style={styles.bio}>Bio: {user.bio}</Text>
           </View>
 

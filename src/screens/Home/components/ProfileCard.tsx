@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { likePostAction } from "../../../redux/postSlice";
 import { sendPushNotification } from "../../Notification/config";
 import { addNotification } from "../../../database/notificationDB/notificationData";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export interface CardDataProps {
   id: number;
@@ -86,56 +87,60 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.iconContainer}>
-        <TouchableOpacity
-          style={styles.iconButton}
-          onPress={() =>
-            navigation.navigate("ViewOthersProfileScreen", {
-              user: props?.data?.user,
-            })
-          }
-        >
-          <Image
-            source={{ uri: props?.data?.user?.profileImage }}
-            style={styles.avatar}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.iconButton}
-          onPress={() => handleLikePress(props?.data, props?.data?.id)}
-        >
-          <FontAwesome
-            name={"heart"}
-            size={30}
-            color={
-              props?.data?.isLikedbyMe
-                ? Common.Colors.error
-                : Common.Colors.white
+      <SafeAreaView style={{ flex: 1 }} edges={["bottom"]}>
+        <View style={styles.iconContainer}>
+          <TouchableOpacity
+            style={styles.iconButton}
+            onPress={() =>
+              userId === props?.data?.userId
+                ? navigation.navigate("ProfileScreen")
+                : navigation.navigate("ViewOthersProfileScreen", {
+                    user: props?.data?.user,
+                  })
             }
-          />
-          <Typography
-            variant="subheading"
-            style={{ color: Common.Colors.white, marginTop: 10 }}
           >
-            {props?.data?.likeCount}
-          </Typography>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton} onPress={props.swipeLeft}>
-          <FontAwesome name={"arrow-left"} size={30} color={"#fff"} />
-        </TouchableOpacity>
+            <Image
+              source={{ uri: props?.data?.user?.profileImage }}
+              style={styles.avatar}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.iconButton}
+            onPress={() => handleLikePress(props?.data, props?.data?.id)}
+          >
+            <FontAwesome
+              name={"heart"}
+              size={30}
+              color={
+                props?.data?.isLikedbyMe
+                  ? Common.Colors.error
+                  : Common.Colors.white
+              }
+            />
+            <Typography
+              variant="subheading"
+              style={{ color: Common.Colors.white, marginTop: 10 }}
+            >
+              {props?.data?.likeCount}
+            </Typography>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton} onPress={props.swipeLeft}>
+            <FontAwesome name={"arrow-left"} size={30} color={"#fff"} />
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.iconButton}
-          onPress={() => handleShare(props?.data)}
-        >
-          <FontAwesome name={"share-alt"} size={30} color={"#fff"} />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.iconButton}
+            onPress={() => handleShare(props?.data)}
+          >
+            <FontAwesome name={"share-alt"} size={30} color={"#fff"} />
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.iconButton} onPress={props.onRefresh}>
-          <FontAwesome name={"refresh"} size={30} color={"#fff"} />
-        </TouchableOpacity>
-      </View>
-      <LongTextWithToggle initialText={props?.data?.title} />
+          <TouchableOpacity style={styles.iconButton} onPress={props.onRefresh}>
+            <FontAwesome name={"refresh"} size={30} color={"#fff"} />
+          </TouchableOpacity>
+        </View>
+        <LongTextWithToggle initialText={props?.data?.title} />
+      </SafeAreaView>
     </View>
   );
 };
@@ -145,9 +150,11 @@ const styles = StyleSheet.create({
     padding: 5,
     position: "absolute",
     zIndex: 9,
-    bottom: 10,
+    bottom: 0,
     right: 0,
-    width: "100%",
+    left: 20,
+    // width: "100%",
+    flex: 1,
   },
   iconContainer: {
     alignItems: "flex-end",

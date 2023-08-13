@@ -18,6 +18,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import CustomLoader from "./src/components/common/loading/CustomLoading";
 import * as Notifications from "expo-notifications";
 import { useEffect } from "react";
+import { Common } from "./src/components/common";
 
 export default function App() {
   useEffect(() => {
@@ -60,6 +61,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: Common.Colors.white,
   },
 });

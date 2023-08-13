@@ -48,24 +48,6 @@ const ProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
     }
   };
 
-  const renderButton = (userId: string) => {
-    if (user?.id === userId) {
-      return (
-        <Button
-          label="Update Profile"
-          onPress={() => navigation.navigate("UpdateProfileScreen")}
-        />
-      );
-    } else {
-      return (
-        <Button
-          label="Follow"
-          // onPress={() => navigation.navigate("UpdateProfileScreen")}
-        />
-      );
-    }
-  };
-
   const handleLogout = () => {
     Alert.alert(
       "Logout",
@@ -100,8 +82,7 @@ const ProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* <Header title={"Profile"} /> */}
-      <StatusBar style="auto" />
+      <Header title={"Profile"} />
       <View style={styles.logoutContainer}>
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Ionicons name="exit-outline" size={24} color={Common.Colors.error} />
@@ -112,6 +93,7 @@ const ProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
       </View>
       {!isLoading && (
         <ScrollView
+          showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl refreshing={false} onRefresh={onRefresh} />
           }
@@ -125,21 +107,24 @@ const ProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
               {user?.firstName + " " + user?.lastName}
             </Text>
             <View style={styles.statsContainer}>
-              <View style={styles.statsItem}>
+              {/* <View style={styles.statsItem}>
                 <Text style={styles.statsText}>{user?.followerCount}</Text>
                 <Text style={styles.statsLabel}>Followers</Text>
               </View>
               <View style={styles.statsItem}>
                 <Text style={styles.statsText}>{user?.followingCount}</Text>
                 <Text style={styles.statsLabel}>Following</Text>
-              </View>
+              </View> */}
               <View style={styles.statsItem}>
                 <Text style={styles.statsText}>{user?.postData?.length}</Text>
                 <Text style={styles.statsLabel}>Posts</Text>
               </View>
             </View>
+            <Button
+              label="Update Profile"
+              onPress={() => navigation.navigate("UpdateProfileScreen")}
+            />
 
-            {renderButton(user?.id)}
             <Text style={styles.bio}>Bio: {user.bio}</Text>
           </View>
 
@@ -159,7 +144,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: Constant.statusBarHeight,
   },
   profileContainer: {
     justifyContent: "center",
@@ -202,7 +186,7 @@ const styles = StyleSheet.create({
   },
   logoutContainer: {
     position: "absolute",
-    top: Constant.statusBarHeight + 10,
+    top: Constant.statusBarHeight,
     right: 10,
     zIndex: 2,
   },
